@@ -127,7 +127,7 @@ Contributions are welcome! Areas where help is especially needed:
 ## Credits
 
 - **Original MikhMon** — [Laksamadi Guko](https://github.com/laksa19/mikhmonv3)
-- **ROS7 community workaround** — Vanz J Tutorials
+- **ROS7 community workaround** — [Vanz J Tutorials](https://www.youtube.com/c/VanzJTutorials)
 - **MikhMon CE** — Maintained by the community
 
 ---
