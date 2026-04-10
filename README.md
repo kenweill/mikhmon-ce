@@ -35,7 +35,7 @@
 
 ## Installation
 
-📥 Step 1: Download
+📥 Download
 1. Download the project as a ZIP from GitHub
 2. Extract the ZIP file
 3. You will get a folder like MikhmonCE-main
