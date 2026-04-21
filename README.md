@@ -54,6 +54,7 @@
 ```bash
 sudo apt install apache2 php libapache2-mod-php
 sudo cp -r mikhmon-ce /var/www/html/
+sudo chown -R www-data:www-data /var/www/html
 sudo systemctl restart apache2
 # Open http://localhost/mikhmon-ce
 ```
