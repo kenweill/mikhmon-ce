@@ -34,7 +34,7 @@ if (!isset($_SESSION["mikhmon"])) {
           <li>Licence : <a href="https://github.com/laksa19/mikhmonv3/blob/master/LICENSE" target="_blank">GPLv2</a></li>
           <li>Original MikhMon : <a href="https://github.com/laksa19/mikhmonv3" target="_blank">github.com/laksa19/mikhmonv3</a></li>
           <li>ROS7 community workaround : <a href="https://www.youtube.com/c/VanzJTutorials" target="_blank">Vanz J Tutorials</a></li>
-          <li>MikhMon CE GitHub : <a href="https://github.com/kenweill/MikhmonCE" target="_blank">github.com/kenweill/MikhmonCE</a></li>
+          <li>MikhMon CE GitHub : <a href="https://github.com/kenweill/mikhmon-ce" target="_blank">github.com/kenweill/mikhmon-ce</a></li>
           <li>API Class : <a href="https://github.com/BenMenking/routeros-api" target="_blank">routeros-api</a></li>
         </ul>
         </p>
