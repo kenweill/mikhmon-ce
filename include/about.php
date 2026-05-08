@@ -59,8 +59,8 @@ if (!isset($_SESSION["mikhmon"])) {
           <li><strong>RouterOS 7.x support</strong> &mdash; Date/time format changes handled automatically</li>
           <li><strong>RouterOS 6.x backward compatible</strong> &mdash; Works with both ROS6 and ROS7</li>
           <li><strong>Improved profile scripts</strong> &mdash; On-login and scheduler scripts updated for ROS7</li>
+          <li><strong>Windows Bundle available</strong> &mdash; Includes built-in server, no Laragon or XAMPP needed for Windows users</li>
           <li><strong>Cross-platform</strong> &mdash; Runs on any OS with PHP 8.x (Windows/Linux/Mac)</li>
-          <li><strong>No proprietary server required</strong> &mdash; Use Laragon, XAMPP, or any web server</li>
         </ul>
       </div>
     </div>
