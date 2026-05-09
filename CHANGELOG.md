@@ -4,7 +4,7 @@ All notable changes to this project are documented here.
 
 ---
 
-## [1.2.0] — 2026
+## [1.2.0]
 
 ### 🚀 New
 - New MikhMon CE branded server launcher (`MikhMonCE_Server.exe`) built with AutoIt — open source and community maintainable
@@ -20,7 +20,7 @@ All notable changes to this project are documented here.
 
 ---
 
-## [1.1.0] — 2026
+## [1.1.0]
 
 ### 🚀 New
 - Windows Bundle (`MikhMonCE-Windows-v1.1.zip`) — includes everything needed for Windows users
@@ -34,7 +34,7 @@ All notable changes to this project are documented here.
 
 ---
 
-## [1.0.0] — 2026
+## [1.0.0]
 
 > First stable public release of MikhMon CE — a community fork of MikhMon by [Laksamadi Guko](https://github.com/laksa19/mikhmonv3).
 
