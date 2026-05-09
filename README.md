@@ -39,8 +39,8 @@
 
 The Windows Bundle includes everything you need - no additional software required.
 
-1. Download `MikhMonCE-Windows-v1.2.zip` from the releases page
-2. Extract the ZIP to any folder (e.g. `C:\MikhMonCE\`)
+1. Download the Windows Bundle from the [releases page](https://github.com/kenweill/mikhmon-ce/releases)
+2. Extract the ZIP directly to your drive root (e.g. `C:\MikhMonCE-Windows\` or `D:\MikhMonCE-Windows\`)
 3. Open the extracted folder
 4. Double-click `MikhMonCE_Server.exe` to start the server
 5. Server starts automatically and minimizes to system tray
@@ -56,7 +56,7 @@ The Windows Bundle includes everything you need - no additional software require
 
 ### Option 2 - Standard (Windows, Linux, macOS with existing web server)
 
-1. Download `MikhMonCE-v1.2.zip` from the releases page
+1. Download the Standard version from the [releases page](https://github.com/kenweill/mikhmon-ce/releases)
 2. Extract the ZIP file
 3. Copy the `mikhmon-ce` folder to your web server root:
    - **Laragon (Windows):** `C:\laragon\www\`
