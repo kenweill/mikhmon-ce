@@ -90,10 +90,4 @@ No renaming of files needed — the launcher uses standard `php.exe` directly.
 
 ---
 
-## 🙏 Credits
-
-See [CREDITS.md](CREDITS.md) for third-party attributions and licenses.
-
----
-
 > Built with ❤️ as a free, no-dependency launcher for MikhMon CE on Windows. No XAMPP, no Laragon — just click and go.
