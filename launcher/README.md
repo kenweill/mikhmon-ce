@@ -69,18 +69,30 @@ MikhMonCE-Windows\
 
 ## 🐘 PHP Setup
 
-1. Download **PHP 8.x NTS x64** from [windows.php.net/download](https://windows.php.net/download)
+The Windows Bundle ships with **PHP 8.3.31 VS16 x64 Non Thread Safe** — no download needed if you're using the bundle.
+
+If you're setting up manually:
+
+1. Download **PHP 8.3 NTS x64** from [windows.php.net/download](https://windows.php.net/download)
 2. Extract into the `php\` folder
 3. Copy the pre-configured `php.ini` from this repo into the `php\` folder
 
+> ⚠️ Use the **Non Thread Safe (NTS)** build — the PHP built-in server does not support the Thread Safe variant.
+
 ### Updating PHP in the Future
 
-1. Download the latest PHP 8.x NTS x64 zip
+1. Download the latest PHP 8.3 NTS x64 zip from [windows.php.net/download](https://windows.php.net/download)
 2. Extract and replace all files in the `php\` folder
 3. Copy your `php.ini` back into the `php\` folder
 4. Restart `MikhMonCE_Server.exe`
 
 No renaming of files needed — the launcher uses standard `php.exe` directly.
+
+---
+
+## 🙏 Credits
+
+See [CREDITS.md](CREDITS.md) for third-party attributions and licenses.
 
 ---
 
