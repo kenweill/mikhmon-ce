@@ -27,7 +27,7 @@
 
 ## Requirements
 
-- PHP 8.0 or higher
+- PHP 8.0 or higher (Windows Bundle includes PHP 8.3.31)
 - PHP extensions: `sockets`, `openssl`, `curl`, `mbstring`
 - MikroTik API service enabled: Winbox > IP > Services > api (port 8728)
 
