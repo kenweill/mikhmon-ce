@@ -39,24 +39,24 @@
 
 The Windows Bundle includes everything you need - no additional software required.
 
-1. Download `MikhMonCE-Windows-v1.1.zip` from the releases page
+1. Download `MikhMonCE-Windows-v1.2.zip` from the releases page
 2. Extract the ZIP to any folder (e.g. `C:\MikhMonCE\`)
 3. Open the extracted folder
-4. Double-click `MikhmonServer.exe` to start the server
-5. Click **Start Server**
-6. Click **Open Mikhmon**
+4. Double-click `MikhMonCE_Server.exe` to start the server
+5. Server starts automatically and minimizes to system tray
+6. Click the tray icon and select **Open MikhMon**
 7. Login with `admin` / `admin`
 
-> The Windows Bundle includes PHP 8.3 and the MikhmonServer launcher.
+> The Windows Bundle includes PHP 8.3 and the MikhMon CE branded launcher.
 > No Laragon, XAMPP, or any other software needed.
 
-> Note: If MikhmonServer.exe fails to start, you may need to install
+> Note: If MikhMonCE_Server.exe fails to start, you may need to install
 > Visual C++ Redistributable 2019 x64 from Microsoft:
 > https://aka.ms/vs/17/release/vc_redist.x64.exe
 
 ### Option 2 - Standard (Windows, Linux, macOS with existing web server)
 
-1. Download `MikhMonCE-v1.1.zip` from the releases page
+1. Download `MikhMonCE-v1.2.zip` from the releases page
 2. Extract the ZIP file
 3. Copy the `mikhmon-ce` folder to your web server root:
    - **Laragon (Windows):** `C:\laragon\www\`
@@ -118,16 +118,47 @@ Attempts to remove this protection currently cause multiple features to break, i
 
 ### Obfuscated JavaScript (Partially Retained)
 
-Some obfuscated JavaScript remains due to dependencies tied to core features. Partial cleanup has been explored, but full removal causes unintended side effects. The goal is to gradually refactor these sections in future versions.
+Some obfuscated JavaScript remains due to dependencies tied to core features. Deobfuscation is ongoing — see Roadmap below for detailed progress.
 
 ---
 
 ## Roadmap
 
-- [ ] Remove all tamper protection mechanisms without breaking functionality
-- [ ] Fully deobfuscate JavaScript codebase
+### Deobfuscation Progress
+
+The original MikhMon codebase contains obfuscated JavaScript across multiple files. We are gradually replacing all obfuscated code with clean, readable equivalents. Below is the full status:
+
+#### Low Priority - Display/Cosmetic Only
+| File | Variable | What It Does | Status |
+|---|---|---|---|
+| `traffic/trafficmonitor.php` | `_0x381f` | Interface dropdown selector | ✅ Done |
+| `traffic/trafficmonitor.php` | `_0xe05e` | Interface session storage reader | ✅ Done |
+| `traffic/trafficmonitor.php` | `_0x2f7f` | Highcharts tooltip formatter | ✅ Done |
+| `dashboard/home.php` | `_0x2f7f` | Highcharts tooltip formatter | ✅ Done |
+| `hotspot/userbyname.php` | `_0x7baa` | Print button click handler | ✅ Done |
+
+#### Medium Priority - Functional but Replaceable
+| File | Variable | What It Does | Status |
+|---|---|---|---|
+| `settings/vouchereditor.php` | `_0x5b73` | CodeMirror editor init + anti-piracy check | ⏳ Pending |
+| `settings/settings.php` | `_0xdf1e` | Session name validator | ⏳ Pending |
+| `settings/settings.php` | `_0x1d39` | Domain whitelist restriction | ⏳ Pending |
+
+#### High Priority - Tamper Protection (Risky)
+| File | Variable | What It Does | Status |
+|---|---|---|---|
+| `js/mikhmon.js` | `_0x8202` | Brand tamper check - destroys page if brand changed | ⚠️ Needs careful handling |
+| `settings/settings.php` | `_0x8202` | Same brand tamper check embedded in settings page | ⚠️ Needs careful handling |
+
+### Other Roadmap Items
+
+- [ ] Complete deobfuscation of all medium priority files
+- [ ] Safely remove tamper protection without breaking functionality
 - [ ] Decouple branding logic from core system behavior
-- [ ] Achieve a true fully open-source structure where rebranding and modification are safe
+- [ ] Achieve fully open-source structure where rebranding is safe
+- [ ] RouterOS 7.x real-world testing and verification
+- [ ] Version check system pointing to MikhMon CE GitHub releases
+- [ ] Auto-update feature for easier upgrades
 
 ---
 
@@ -135,9 +166,9 @@ Some obfuscated JavaScript remains due to dependencies tied to core features. Pa
 
 Contributions are welcome! Areas where help is especially needed:
 
-- Reverse-engineering obfuscated logic
-- Refactoring core JavaScript components
 - Testing on RouterOS 7.x devices
+- Safely removing tamper protection (`_0x8202`) from `mikhmon.js` and `settings/settings.php`
+- Refactoring remaining obfuscated JavaScript (see Roadmap above)
 
 > Note for fork maintainers: Removing tamper-related code may currently break parts of the system.
 > Full rebranding support is a work in progress. Please retain the GPL v2 license and proper credit to the original author.
