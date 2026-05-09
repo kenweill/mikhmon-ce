@@ -6,6 +6,7 @@
 #include <ButtonConstants.au3>
 #include <File.au3>
 #include <MsgBoxConstants.au3>
+#include <TrayConstants.au3>
 
 ; ============================================================
 ; MikhMon CE Server Launcher
@@ -22,6 +23,7 @@ Global $sPortFile = $sPhpDir & "\port.ini"
 Global $iPort = 80
 Global $iPID = 0
 Global $sServerIP = ""
+Global $bMinimizedToTray = False
 
 ; Read saved port
 If FileExists($sPortFile) Then
@@ -33,19 +35,38 @@ EndIf
 $sServerIP = _GetLocalIP()
 
 ; ============================================================
+; Tray Setup
+; ============================================================
+Opt("TrayMenuMode", 3)
+Opt("TrayOnEventMode", 1)
+
+TraySetIcon(@ScriptDir & "\MikhMonCE_Server.exe", 1)
+TraySetToolTip("MikhMon CE Server")
+
+Local $trayShow = TrayCreateItem("Show")
+TrayItemSetOnEvent($trayShow, "_ShowFromTray")
+TrayCreateItem("")
+Local $trayOpen = TrayCreateItem("Open MikhMon")
+TrayItemSetOnEvent($trayOpen, "_OpenBrowser")
+TrayCreateItem("")
+Local $trayStop = TrayCreateItem("Stop Server")
+TrayItemSetOnEvent($trayStop, "_StopFromTray")
+TrayCreateItem("")
+Local $trayExit = TrayCreateItem("Exit")
+TrayItemSetOnEvent($trayExit, "_ExitApp")
+
+; ============================================================
 ; GUI Setup
 ; ============================================================
 Global $hGUI = GUICreate("MikhMon CE Server", 320, 240, -1, -1, $WS_CAPTION + $WS_SYSMENU + $WS_MINIMIZEBOX)
 
 ; Title label
 GUICtrlCreateLabel("MikhMon CE Server", 0, 18, 320, 28, $SS_CENTER)
-WinSetTitle($hGUI, "", "MikhMon CE Server")
-Local $hTitleFont = GUICtrlGetHandle(-1)
 GUICtrlSetFont(-1, 14, 700)
 GUICtrlSetColor(-1, 0x2d7fd4)
 
 ; Status / IP label
-Global $lblStatus = GUICtrlCreateLabel("Server is stopped", 0, 52, 320, 20, $SS_CENTER)
+Global $lblStatus = GUICtrlCreateLabel("Starting server...", 0, 52, 320, 20, $SS_CENTER)
 GUICtrlSetFont(-1, 9, 400)
 GUICtrlSetColor(-1, 0x888888)
 
@@ -53,20 +74,18 @@ GUICtrlSetColor(-1, 0x888888)
 GUICtrlCreateLabel("", 10, 78, 300, 1, $SS_ETCHEDHORZ)
 
 ; Buttons
-Global $btnStart = GUICtrlCreateButton("Start Server", 20, 92, 130, 34)
+Global $btnStart = GUICtrlCreateButton("Stop Server", 20, 92, 130, 34)
 GUICtrlSetFont(-1, 9, 700)
 GUICtrlSetBkColor(-1, 0x2d7fd4)
 GUICtrlSetColor(-1, 0xFFFFFF)
 
 Global $btnOpen = GUICtrlCreateButton("Open MikhMon", 165, 92, 130, 34)
 GUICtrlSetFont(-1, 9, 400)
-GUICtrlSetState(-1, $GUI_DISABLE)
 
 ; Settings group
 GUICtrlCreateGroup(" Settings ", 10, 140, 300, 58)
 GUICtrlCreateLabel("Server Port:", 24, 162, 75, 20)
 GUICtrlSetFont(-1, 9, 400)
-
 Global $txtPort = GUICtrlCreateInput($iPort, 100, 159, 60, 22, $ES_NUMBER)
 Global $btnChangePort = GUICtrlCreateButton("Change Port", 175, 158, 120, 24)
 GUICtrlCreateGroup("", -99, -99, 1, 1)
@@ -80,6 +99,11 @@ GUICtrlSetColor(-1, 0x999999)
 GUISetState(@SW_SHOW, $hGUI)
 
 ; ============================================================
+; Auto-start server on launch
+; ============================================================
+_StartServer()
+
+; ============================================================
 ; Main Event Loop
 ; ============================================================
 While 1
@@ -87,8 +111,11 @@ While 1
 
     Switch $nMsg
         Case $GUI_EVENT_CLOSE
-            _StopServer()
-            Exit
+            ; Minimize to tray instead of closing
+            GUISetState(@SW_HIDE, $hGUI)
+            TraySetIcon(@ScriptDir & "\MikhMonCE_Server.exe", 1)
+            TraySetToolTip("MikhMon CE Server - Running on port " & $iPort)
+            $bMinimizedToTray = True
 
         Case $btnStart
             If $iPID = 0 Then
@@ -108,6 +135,7 @@ While 1
                 If $iPID <> 0 Then
                     _StopServer()
                     $iPort = $iNewPort
+                    FileDelete($sPortFile)
                     FileWriteLine($sPortFile, $iPort)
                     _StartServer()
                 Else
@@ -135,24 +163,24 @@ WEnd
 ; ============================================================
 
 Func _StartServer()
-    ; Check if php exe exists
     If Not FileExists($sPhpExe) Then
         MsgBox($MB_ICONERROR, "MikhMon CE", "PHP executable not found!" & @CRLF & $sPhpExe & @CRLF & @CRLF & "Make sure the php folder containing php.exe is in the same directory as this exe.")
+        _SetStopped()
         Return
     EndIf
 
-    ; Check if mikhmon-ce folder exists
     If Not FileExists($sMikhmonDir & "\index.php") Then
         MsgBox($MB_ICONERROR, "MikhMon CE", "MikhMon CE files not found!" & @CRLF & $sMikhmonDir & @CRLF & @CRLF & "Make sure the mikhmon-ce folder is in the same directory as this exe.")
+        _SetStopped()
         Return
     EndIf
 
-    ; Start PHP built-in server
     Local $sCmd = '"' & $sPhpExe & '" -S 0.0.0.0:' & $iPort & ' -t "' & $sMikhmonDir & '"'
     $iPID = Run($sCmd, $sScriptDir, @SW_HIDE)
 
     If $iPID = 0 Then
-        MsgBox($MB_ICONERROR, "MikhMon CE", "Failed to start server!" & @CRLF & @CRLF & "Try a different port number - port " & $iPort & " may already be in use.")
+        MsgBox($MB_ICONERROR, "MikhMon CE", "Failed to start server!" & @CRLF & @CRLF & "Port " & $iPort & " may already be in use. Try changing the port.")
+        _SetStopped()
         Return
     EndIf
 
@@ -161,6 +189,7 @@ Func _StartServer()
     If Not ProcessExists($iPID) Then
         $iPID = 0
         MsgBox($MB_ICONERROR, "MikhMon CE", "Server failed to start!" & @CRLF & @CRLF & "Port " & $iPort & " may already be in use. Try changing the port.")
+        _SetStopped()
         Return
     EndIf
 
@@ -181,6 +210,7 @@ Func _SetRunning()
     GUICtrlSetColor($lblStatus, 0x2d7fd4)
     GUICtrlSetData($btnStart, "Stop Server")
     GUICtrlSetState($btnOpen, $GUI_ENABLE)
+    TraySetToolTip("MikhMon CE Server - Running on port " & $iPort)
 EndFunc
 
 Func _SetStopped()
@@ -189,25 +219,44 @@ Func _SetStopped()
     GUICtrlSetColor($lblStatus, 0x888888)
     GUICtrlSetData($btnStart, "Start Server")
     GUICtrlSetState($btnOpen, $GUI_DISABLE)
+    TraySetToolTip("MikhMon CE Server - Stopped")
+EndFunc
+
+Func _ShowFromTray()
+    GUISetState(@SW_SHOW, $hGUI)
+    WinActivate($hGUI)
+    $bMinimizedToTray = False
+EndFunc
+
+Func _OpenBrowser()
+    If $iPID <> 0 Then
+        ShellExecute("http://" & $sServerIP & ":" & $iPort)
+    Else
+        MsgBox($MB_ICONINFORMATION, "MikhMon CE", "Server is not running. Please open the launcher and start the server first.")
+    EndIf
+EndFunc
+
+Func _StopFromTray()
+    _StopServer()
+    GUISetState(@SW_SHOW, $hGUI)
+    $bMinimizedToTray = False
+EndFunc
+
+Func _ExitApp()
+    _StopServer()
+    Exit
 EndFunc
 
 Func _GetLocalIP()
-    Local $oShell = ObjCreate("WScript.Shell")
     Local $sIP = ""
-
-    ; Try to get local IP via PowerShell
     Local $iPID2 = Run(@ComSpec & ' /c powershell -Command "(Get-NetIPAddress -AddressFamily IPv4 | Where-Object {$_.IPAddress -notlike ''127.*''} | Select-Object -First 1).IPAddress"', "", @SW_HIDE, 2)
-    Local $sOutput = ""
-    Local $hStdout = StdoutRead($iPID2, False, False)
-
     Local $iWait = 0
     While ProcessExists($iPID2) And $iWait < 30
         Sleep(100)
         $iWait += 1
     Wend
-    $sOutput = StdoutRead($iPID2)
+    Local $sOutput = StdoutRead($iPID2)
     $sIP = StringStripWS($sOutput, 3)
-
     If $sIP = "" Then $sIP = "localhost"
     Return $sIP
 EndFunc
