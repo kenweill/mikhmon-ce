@@ -116,6 +116,28 @@ Then open `http://localhost/mikhmon-ce`
 
 ---
 
+## Customization
+
+### Rebranding
+
+Since MikhMon CE is fully open source and tamper protection has been completely removed, you are free to rebrand it under the terms of GPL v2.
+
+To change the app name displayed in the sidebar, edit `include/menu.php` and update the two `#brand` elements:
+
+```php
+<!-- Desktop sidebar brand name -->
+<a id="brand" class="text-center" href="javascript:void(0)">MikhMon CE</a>
+
+<!-- Mobile sidebar brand name -->
+<a id="brand" class="text-center" href="./?session=<?= $session; ?>">MikhMon CE</a>
+```
+
+Change `MikhMon CE` to your preferred name on both lines. No other files need to be changed for basic rebranding.
+
+> Please retain the GPL v2 license and credit to the original author (Laksamadi Guko) when rebranding or forking.
+
+---
+
 ## Roadmap
 
 ### Deobfuscation Progress
@@ -175,6 +197,12 @@ Contributions are welcome! Areas where help is especially needed:
 - **Original MikhMon** - [Laksamadi Guko](https://github.com/laksa19/mikhmonv3)
 - **ROS7 community workaround** - [Vanz J Tutorials](https://www.youtube.com/c/VanzJTutorials)
 - **MikhMon CE** - Maintained by the community
+
+---
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for full version history.
 
 ---
 
