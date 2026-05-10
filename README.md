@@ -141,8 +141,8 @@ The original MikhMon codebase contains obfuscated JavaScript across multiple fil
 | File | Variable | What It Does | Status |
 |---|---|---|---|
 | `settings/vouchereditor.php` | `_0x5b73` | CodeMirror editor init + anti-piracy check | ✅ Done |
-| `settings/settings.php` | `_0xdf1e` | Session name validator | ⏳ Pending |
-| `settings/settings.php` | `_0x1d39` | Domain whitelist restriction | ⏳ Pending |
+| `settings/settings.php` | `_0xdf1e` | Session name validator | ✅ Done |
+| `settings/settings.php` | `_0x1d39` | Domain whitelist restriction | ✅ Done |
 
 #### High Priority - Tamper Protection (Risky)
 | File | Variable | What It Does | Status |
