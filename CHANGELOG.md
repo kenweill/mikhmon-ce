@@ -1,6 +1,34 @@
 # 📋 Changelog — MikhMon CE
-
 All notable changes to this project are documented here.
+
+---
+
+## [1.3.0]
+> Full deobfuscation release — MikhMon CE is now completely open source with no hidden code.
+
+### 🔧 Fixed — Deobfuscation Complete
+- Removed all obfuscated JavaScript (`_0x` variables) across the entire codebase
+- All code is now clean, readable, and fully open source compliant
+
+### 🗑️ Removed
+- **Brand tamper check** (`_0x8202`) from `js/mikhmon.js` — original code destroyed the page if brand name was changed. Removed as MikhMon CE is GPL v2 licensed and rebranding is permitted
+- **Brand tamper check** (`_0x8202`) from `settings/settings.php` — same check on settings page load. Removed for same reason
+- **Domain whitelist restriction** (`_0x1d39`) from `settings/settings.php` — original code only allowed ping test on `xban.xyz`, `logam.id`, `minis.id`. Removed so ping test works on all domains
+- **Anti-piracy alert** from `settings/vouchereditor.php` — `"Mikhmon bajakan! :)"` alert on voucher editor. Removed as it was not real security — PHP session check already handles authentication
+- **Original MikhMon version check** from `settings/sessions.php` — removed check that fetched version from original MikhMon GitHub repo
+
+### ✨ Improved
+- **Ping test** now works on all domains and local installations
+- **Session name validator** (`_0xdf1e`) deobfuscated and updated — reserved names now include `mikhmon-ce` variants
+- **Highcharts tooltip** (`_0x2f7f`) in `traffic/trafficmonitor.php` and `dashboard/home.php` deobfuscated — tooltip now shows `MikhMon CE Traffic Monitor`
+- **Interface selector** (`_0x381f`, `_0xe05e`) in `traffic/trafficmonitor.php` deobfuscated
+- **Print button handler** (`_0x7baa`) in `hotspot/userbyname.php` deobfuscated
+- **CodeMirror editor init** (`_0x5b73`) in `settings/vouchereditor.php` deobfuscated
+- **idleTimer()** in `js/mikhmon.js` rewritten cleanly — session timeout functionality fully preserved
+
+### 🏷️ Branding
+- All `MIKHMON` references in codebase updated to `MikhMon CE`
+- `Mikhmon Traffic Monitor` tooltip updated to `MikhMon CE Traffic Monitor`
 
 ---
 
@@ -13,6 +41,8 @@ All notable changes to this project are documented here.
 
 ### ✨ Improved
 - PHP updates no longer require file renaming — just extract the new PHP zip and go
+- Server auto-starts on launch and minimizes to system tray when closed
+- Tray icon with right-click menu: Show, Open MikhMon, Stop Server, Exit
 
 ### 🔄 Changed
 - Replaced original `MikhmonServer.exe` with new branded `MikhMonCE_Server.exe`
@@ -35,7 +65,6 @@ All notable changes to this project are documented here.
 ---
 
 ## [1.0.0]
-
 > First stable public release of MikhMon CE — a community fork of MikhMon by [Laksamadi Guko](https://github.com/laksa19/mikhmonv3).
 
 ### 🔧 Fixed — PHP 8.x Compatibility
@@ -57,8 +86,3 @@ All notable changes to this project are documented here.
 - Rebranded to MikhMon CE (Community Edition)
 - Updated About page with credits and changelog
 - Default login: `admin` / `admin` — change immediately after first login
-
-### ⚠️ Known Limitations
-- Tamper protection retained for stability — removal planned for a future release
-- Some obfuscated JavaScript remains due to core dependencies
-- Full deobfuscation is a planned community effort
