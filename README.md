@@ -146,13 +146,15 @@ All obfuscated JavaScript has been fully removed and replaced with clean, readab
 
 ### Other Roadmap Items
 
-- [x] Complete deobfuscation of all files
-- [x] Remove tamper protection safely
-- [x] Decouple branding logic from core system behavior
-- [x] Achieve fully open-source structure where rebranding is safe
-- [ ] RouterOS 7.x real-world testing and verification
-- [ ] Version check system pointing to MikhMon CE GitHub releases
-- [ ] Auto-update feature for easier upgrades
+| Status | Item |
+|---|---|
+| ✅ | Complete deobfuscation of all files |
+| ✅ | Remove tamper protection safely |
+| ✅ | Decouple branding logic from core system behavior |
+| ✅ | Achieve fully open-source structure where rebranding is safe |
+| ⏳ | RouterOS 7.x real-world testing and verification |
+| 🔲 | Version check system pointing to MikhMon CE GitHub releases |
+| 🔲 | Auto-update feature for easier upgrades |
 
 ---
 
