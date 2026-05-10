@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MikhMon CE - Community Edition</title>
+    <meta name="description" content="MikhMon CE - Free, open-source MikroTik hotspot manager. Compatible with RouterOS 6 & 7 and PHP 8.x.">
+    <meta property="og:title" content="MikhMon CE - Community Edition">
+    <meta property="og:description" content="Free, open-source MikroTik hotspot manager. Compatible with RouterOS 6 & 7 and PHP 8.x.">
+    <meta property="og:url" content="https://kenweill.github.io/mikhmon-ce">
+    <link rel="icon" href="https://raw.githubusercontent.com/kenweill/mikhmon-ce/main/img/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cyan: #00BFFF;
+            --orange: #FF6600;
+            --dark: #0a0a0f;
+            --darker: #06060a;
+            --card: #111118;
+            --border: #1e1e2e;
+            --text: #e0e0f0;
+            --muted: #666680;
+            --code-bg: #0d0d1a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--dark);
+            color: var(--text);
+            font-family: 'Syne', sans-serif;
+            line-height: 1.7;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: rgba(10,10,15,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--cyan);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-brand span { color: var(--orange); }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--cyan); }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(0,191,255,0.06) 0%, transparent 70%);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .hero-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            display: block;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero h1 .cyan { color: var(--cyan); }
+        .hero h1 .orange { color: var(--orange); }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(0,191,255,0.1);
+            border: 1px solid rgba(0,191,255,0.3);
+            color: var(--cyan);
+            padding: 0.3rem 1rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-desc {
+            font-size: 1.15rem;
+            color: var(--muted);
+            max-width: 560px;
+            margin: 0 auto 2.5rem;
+            font-weight: 400;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.8rem;
+            border-radius: 8px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--cyan);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background: #fff;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--cyan);
+            color: var(--cyan);
+            transform: translateY(-2px);
+        }
+
+        /* BADGES ROW */
+        .badges {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2.5rem;
+        }
+
+        .badge {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.4rem 0.9rem;
+            font-size: 0.78rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--muted);
+        }
+
+        .badge .dot {
+            display: inline-block;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--cyan);
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        .badge .dot.orange { background: var(--orange); }
+
+        /* SECTIONS */
+        section {
+            padding: 5rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--cyan);
+            margin-bottom: 0.75rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 1rem;
+        }
+
+        .section-desc {
+            color: var(--muted);
+            max-width: 600px;
+            margin-bottom: 3rem;
+        }
+
+        /* FEATURES GRID */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.8rem;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--cyan);
+            transform: translateY(-3px);
+        }
+
+        .feature-icon {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .feature-card p {
+            font-size: 0.88rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* INSTALL TABS */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.5rem 1.2rem;
+            border-radius: 6px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--muted);
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: var(--cyan);
+            color: #000;
+            border-color: var(--cyan);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .install-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .install-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #fff;
+        }
+
+        .steps { list-style: none; counter-reset: steps; }
+
+        .steps li {
+            counter-increment: steps;
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+            font-size: 0.9rem;
+            align-items: flex-start;
+        }
+
+        .steps li::before {
+            content: counter(steps);
+            min-width: 28px;
+            height: 28px;
+            background: rgba(0,191,255,0.15);
+            border: 1px solid rgba(0,191,255,0.3);
+            color: var(--cyan);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* CODE BLOCKS */
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: #a0d0ff;
+            overflow-x: auto;
+            line-height: 1.8;
+        }
+
+        .code-block .comment { color: var(--muted); }
+        .code-block .keyword { color: var(--orange); }
+        .code-block .value { color: #7ec8a0; }
+
+        /* GUIDE CARDS */
+        .guide-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .guide-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .guide-badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 100px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .guide-badge.essential {
+            background: rgba(255,102,0,0.15);
+            color: var(--orange);
+            border: 1px solid rgba(255,102,0,0.3);
+        }
+
+        .guide-badge.recommended {
+            background: rgba(0,191,255,0.1);
+            color: var(--cyan);
+            border: 1px solid rgba(0,191,255,0.3);
+        }
+
+        .guide-card p {
+            color: var(--muted);
+            font-size: 0.88rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .guide-steps { list-style: none; }
+
+        .guide-steps li {
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.88rem;
+            color: var(--text);
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+
+        .guide-steps li:last-child { border-bottom: none; }
+
+        .guide-steps li span.arrow {
+            color: var(--cyan);
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .note-box {
+            background: rgba(255,102,0,0.07);
+            border: 1px solid rgba(255,102,0,0.25);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: #ffaa77;
+        }
+
+        .note-box strong { color: var(--orange); }
+
+        .info-box {
+            background: rgba(0,191,255,0.07);
+            border: 1px solid rgba(0,191,255,0.2);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: #88ccee;
+        }
+
+        /* DIVIDER */
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 0;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--darker);
+            border-top: 1px solid var(--border);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        footer .footer-brand {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        footer .footer-brand span { color: var(--orange); }
+
+        footer p {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+
+        footer a { color: var(--cyan); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero { padding: 5rem 1.5rem 3rem; }
+            section { padding: 3rem 1.5rem; }
+        }
+
+        /* INLINE CODE */
+        code {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 0.1rem 0.4rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82em;
+            color: var(--cyan);
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+    <a href="#" class="nav-brand">MikhMon <span>CE</span></a>
+    <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#install">Install</a></li>
+        <li><a href="#guides">Guides</a></li>
+        <li><a href="https://github.com/kenweill/mikhmon-ce" target="_blank">GitHub</a></li>
+    </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+    <div>
+        <img src="https://raw.githubusercontent.com/kenweill/mikhmon-ce/main/img/logo.png"
+             alt="MikhMon CE Logo" class="hero-logo"
+             onerror="this.style.display='none'">
+        <div class="hero-badge">Community Edition</div>
+        <h1><span class="cyan">MikhMon</span> <span class="orange">CE</span></h1>
+        <p class="hero-desc">
+            Free, open-source MikroTik hotspot manager. No radius server needed.
+            Compatible with RouterOS 6 &amp; 7 and PHP 8.x.
+        </p>
+        <div class="hero-buttons">
+            <a href="https://github.com/kenweill/mikhmon-ce/releases" class="btn btn-primary" target="_blank">
+                ⬇ Download
+            </a>
+            <a href="https://github.com/kenweill/mikhmon-ce" class="btn btn-secondary" target="_blank">
+                ★ GitHub
+            </a>
+        </div>
+        <div class="badges">
+            <span class="badge"><span class="dot"></span>RouterOS 6.x</span>
+            <span class="badge"><span class="dot"></span>RouterOS 7.x</span>
+            <span class="badge"><span class="dot orange"></span>PHP 8.0+</span>
+            <span class="badge"><span class="dot orange"></span>GPL v2</span>
+            <span class="badge"><span class="dot"></span>Open Source</span>
+        </div>
+    </div>
+</div>
+
+<hr class="divider">
+
+<!-- FEATURES -->
+<section id="features">
+    <div class="section-label">What's included</div>
+    <h2 class="section-title">Everything you need to manage your hotspot</h2>
+    <p class="section-desc">MikhMon CE is a web-based MikroTik hotspot monitor built for internet café and WiFi hotspot operators.</p>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">🎫</div>
+            <h3>Voucher Generation</h3>
+            <p>Generate, print and manage hotspot vouchers with customizable templates. Batch generate hundreds of vouchers at once.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">👥</div>
+            <h3>User Management</h3>
+            <p>Add, edit and delete hotspot users. View active sessions, manage expiry, and monitor usage in real time.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Sales Reports</h3>
+            <p>Track daily and monthly sales with detailed reports. Monitor revenue and usage patterns over time.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📡</div>
+            <h3>Traffic Monitor</h3>
+            <p>Real-time traffic monitoring with Highcharts graphs. Monitor bandwidth usage per interface.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">⚙️</div>
+            <h3>Profile Management</h3>
+            <p>Create and manage hotspot profiles with time limits, data limits, speed limits and expiry settings.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔓</div>
+            <h3>Fully Open Source</h3>
+            <p>No obfuscated code, no domain restrictions, no tamper protection. Free to use, modify and rebrand under GPL v2.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🖥️</div>
+            <h3>Windows Bundle</h3>
+            <p>Includes a branded launcher (MikhMonCE_Server.exe) with PHP 8.3 built-in. No Laragon or XAMPP needed.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔄</div>
+            <h3>RouterOS 6 &amp; 7</h3>
+            <p>Automatic date and time format detection. Works seamlessly with both RouterOS 6.x and 7.x without configuration.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🐘</div>
+            <h3>PHP 8.x Compatible</h3>
+            <p>All deprecated functions updated for PHP 8.0 through 8.5+. No more compatibility warnings or broken features.</p>
+        </div>
+    </div>
+</section>
+
+<hr class="divider">
+
+<!-- INSTALLATION -->
+<section id="install">
+    <div class="section-label">Get started</div>
+    <h2 class="section-title">Installation</h2>
+    <p class="section-desc">Choose the installation method that works best for you.</p>
+
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('windows')">🪟 Windows Bundle</button>
+        <button class="tab" onclick="showTab('standard')">🌐 Standard</button>
+        <button class="tab" onclick="showTab('linux')">🐧 Linux</button>
+        <button class="tab" onclick="showTab('macos')">🍎 macOS</button>
+    </div>
+
+    <!-- Windows Bundle -->
+    <div class="tab-content active" id="tab-windows">
+        <div class="install-card">
+            <h3>Windows Bundle — Recommended for Windows users</h3>
+            <ol class="steps">
+                <li>Download the Windows Bundle from the <a href="https://github.com/kenweill/mikhmon-ce/releases" target="_blank" style="color:var(--cyan)">releases page</a></li>
+                <li>Extract the ZIP directly to your drive root — e.g. <code>C:\MikhMonCE-Windows\</code> or <code>D:\MikhMonCE-Windows\</code></li>
+                <li>Open the extracted folder and double-click <code>MikhMonCE_Server.exe</code></li>
+                <li>The server starts automatically and minimizes to the system tray</li>
+                <li>Right-click the tray icon and select <strong>Open MikhMon</strong></li>
+                <li>Login with <code>admin</code> / <code>admin</code> — change password immediately after first login</li>
+            </ol>
+            <div class="info-box">
+                ✅ PHP 8.3 is included in the bundle — no additional software needed.
+            </div>
+            <div class="note-box">
+                <strong>⚠ Note:</strong> If the launcher fails to start, install
+                <a href="https://aka.ms/vs/17/release/vc_redist.x64.exe" style="color:var(--orange)">Visual C++ Redistributable 2019 x64</a> from Microsoft.
+            </div>
+        </div>
+    </div>
+
+    <!-- Standard -->
+    <div class="tab-content" id="tab-standard">
+        <div class="install-card">
+            <h3>Standard — For existing web server users</h3>
+            <ol class="steps">
+                <li>Download the Standard version from the <a href="https://github.com/kenweill/mikhmon-ce/releases" target="_blank" style="color:var(--cyan)">releases page</a></li>
+                <li>Extract the ZIP file</li>
+                <li>Copy the <code>mikhmon-ce</code> folder to your web server root:
+                    <div class="code-block">
+                        <span class="comment"># Laragon (Windows)</span><br>
+                        C:\laragon\www\<br><br>
+                        <span class="comment"># XAMPP (Windows)</span><br>
+                        C:\xampp\htdocs\<br><br>
+                        <span class="comment"># WAMP (Windows)</span><br>
+                        C:\wamp64\www\
+                    </div>
+                </li>
+                <li>Open your browser and go to <code>http://localhost/mikhmon-ce</code></li>
+                <li>Login with <code>admin</code> / <code>admin</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Linux -->
+    <div class="tab-content" id="tab-linux">
+        <div class="install-card">
+            <h3>Linux — Apache + PHP</h3>
+            <ol class="steps">
+                <li>Install Apache and PHP:
+                    <div class="code-block">sudo apt install apache2 php libapache2-mod-php php-curl php-mbstring php-sockets</div>
+                </li>
+                <li>Download and copy MikhMon CE:
+                    <div class="code-block">sudo cp -r mikhmon-ce /var/www/html/<br>sudo chown -R www-data:www-data /var/www/html/mikhmon-ce</div>
+                </li>
+                <li>Restart Apache:
+                    <div class="code-block">sudo systemctl restart apache2</div>
+                </li>
+                <li>Open your browser and go to <code>http://localhost/mikhmon-ce</code></li>
+                <li>Login with <code>admin</code> / <code>admin</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- macOS -->
+    <div class="tab-content" id="tab-macos">
+        <div class="install-card">
+            <h3>macOS — MAMP or Homebrew</h3>
+            <ol class="steps">
+                <li>Install <a href="https://www.mamp.info" target="_blank" style="color:var(--cyan)">MAMP</a> or PHP via Homebrew:
+                    <div class="code-block">brew install php</div>
+                </li>
+                <li>Copy the <code>mikhmon-ce</code> folder to your web root:
+                    <div class="code-block"><span class="comment"># MAMP</span><br>/Applications/MAMP/htdocs/<br><br><span class="comment"># Homebrew</span><br>/opt/homebrew/var/www/</div>
+                </li>
+                <li>Start your web server and open <code>http://localhost/mikhmon-ce</code></li>
+                <li>Login with <code>admin</code> / <code>admin</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="info-box" style="margin-top:1.5rem">
+        <strong>Requirements:</strong> PHP 8.0 or higher &nbsp;|&nbsp;
+        MikroTik API enabled: Winbox → IP → Services → <strong>api</strong> (port 8728)
+    </div>
+</section>
+
+<hr class="divider">
+
+<!-- GUIDES -->
+<section id="guides">
+    <div class="section-label">Common setup</div>
+    <h2 class="section-title">Guides</h2>
+    <p class="section-desc">Essential guides for setting up MikhMon CE correctly with your MikroTik device.</p>
+
+    <!-- Guide 1: Date & Time Fix -->
+    <div class="guide-card">
+        <h3>
+            🕐 Fix Date &amp; Time After Router Reboot
+            <span class="guide-badge essential">Essential</span>
+        </h3>
+        <p>
+            After a power outage or reboot, MikroTik resets the clock to <code>Jan/01/1970 00:00:00</code>.
+            This causes MikhMon CE to malfunction — voucher expiry, session tracking and sales reports all depend on accurate time.
+            This guide shows how to preserve the date and time across reboots.
+        </p>
+
+        <h4 style="margin-bottom:0.75rem; color:#fff; font-size:0.9rem;">Step 1 — Create a Script</h4>
+        <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.5rem;">Go to <strong>System → Script</strong> and create a new script:</p>
+        <ul class="guide-steps">
+            <li><span class="arrow">→</span> Name: <code>datetime</code></li>
+            <li><span class="arrow">→</span> Leave <strong>On Event</strong> empty — it will be filled by the scheduler</li>
+        </ul>
+
+        <h4 style="margin:1.2rem 0 0.75rem; color:#fff; font-size:0.9rem;">Step 2 — Create a Scheduler (saves time every 5 minutes)</h4>
+        <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.5rem;">Go to <strong>System → Scheduler</strong> and create:</p>
+        <ul class="guide-steps">
+            <li><span class="arrow">→</span> Name: <code>datetime</code></li>
+            <li><span class="arrow">→</span> Interval: <code>00:05:00</code></li>
+            <li><span class="arrow">→</span> On Event (paste this script):
+                <div class="code-block" style="margin-top:0.5rem">
+                    :local date [/sys clock get date];<br>
+                    :local time [/sys clock get time];<br>
+                    /sys scr set source="/sys clock set date=$date time=$time" [find where name=datetime];
+                </div>
+            </li>
+        </ul>
+
+        <h4 style="margin:1.2rem 0 0.75rem; color:#fff; font-size:0.9rem;">Step 3 — Create a Startup Scheduler (restores time on boot)</h4>
+        <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.5rem;">Create another scheduler:</p>
+        <ul class="guide-steps">
+            <li><span class="arrow">→</span> Name: <code>datetime-startup</code></li>
+            <li><span class="arrow">→</span> Start Time: <code>startup</code></li>
+            <li><span class="arrow">→</span> Interval: <code>00:00:00</code></li>
+            <li><span class="arrow">→</span> On Event:
+                <div class="code-block" style="margin-top:0.5rem">/sys scr run datetime</div>
+            </li>
+        </ul>
+
+        <div class="info-box" style="margin-top:1rem">
+            <strong>How it works:</strong> The datetime(2) scheduler saves the current date and time to the datetime(1) script every 5 minutes.
+            On reboot, datetime-startup runs the datetime(1) script which restores the last saved time.
+            Once internet is available, SNTP Client updates to the accurate current time automatically.
+        </div>
+
+        <h4 style="margin:1.2rem 0 0.75rem; color:#fff; font-size:0.9rem;">Step 4 — Configure SNTP Client</h4>
+        <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.5rem;">Go to <strong>System → SNTP Client</strong>:</p>
+        <ul class="guide-steps">
+            <li><span class="arrow">→</span> Check <strong>Enabled</strong></li>
+            <li><span class="arrow">→</span> Add Server DNS Names: <code>asia.pool.ntp.org</code> (or your preferred NTP server)</li>
+        </ul>
+
+        <p style="font-size:0.85rem; color:var(--muted); margin:1rem 0 0.5rem;">Also go to <strong>IP → Cloud</strong>:</p>
+        <ul class="guide-steps">
+            <li><span class="arrow">→</span> Uncheck <strong>Update Time</strong> — let SNTP Client handle time sync instead</li>
+        </ul>
+
+        <p style="font-size:0.85rem; color:var(--muted); margin:1rem 0 0.5rem;">And go to <strong>System → Clock</strong>:</p>
+        <ul class="guide-steps">
+            <li><span class="arrow">→</span> Uncheck <strong>Time Zone Autodetect</strong></li>
+            <li><span class="arrow">→</span> Set your correct Time Zone manually (e.g. <code>Asia/Manila</code> for Philippines)</li>
+        </ul>
+
+        <div class="note-box">
+            <strong>⚠ Recommended NTP Servers:</strong><br>
+            • <code>pool.ntp.org</code> — Global<br>
+            • <code>asia.pool.ntp.org</code> — Asia region (recommended for Philippines)<br>
+            • <code>time.google.com</code> — Google Public NTP<br>
+            • <code>time.nist.gov</code> — NIST Internet Time Servers
+        </div>
+    </div>
+
+    <!-- Guide 2: MikroTik API -->
+    <div class="guide-card">
+        <h3>
+            🔌 Enable MikroTik API Service
+            <span class="guide-badge essential">Essential</span>
+        </h3>
+        <p>MikhMon CE communicates with your MikroTik device via the RouterOS API. This must be enabled before MikhMon CE can connect.</p>
+        <ul class="guide-steps">
+            <li><span class="arrow">→</span> Open <strong>Winbox</strong> and connect to your MikroTik</li>
+            <li><span class="arrow">→</span> Go to <strong>IP → Services</strong></li>
+            <li><span class="arrow">→</span> Find <strong>api</strong> in the list and make sure it is <strong>enabled</strong></li>
+            <li><span class="arrow">→</span> Default port is <code>8728</code> — leave as-is unless you have a specific reason to change it</li>
+            <li><span class="arrow">→</span> Optionally restrict access to specific IP addresses for security</li>
+        </ul>
+        <div class="info-box">
+            ✅ Once the API is enabled, enter your MikroTik's IP address, username and password in MikhMon CE's Session Settings and click Connect.
+        </div>
+    </div>
+
+    <!-- Guide 3: Hotspot Setup -->
+    <div class="guide-card">
+        <h3>
+            📶 Basic Hotspot Setup on MikroTik
+            <span class="guide-badge recommended">Recommended</span>
+        </h3>
+        <p>Before using MikhMon CE, make sure your MikroTik hotspot is properly configured. Here is a quick checklist:</p>
+        <ul class="guide-steps">
+            <li><span class="arrow">→</span> Hotspot must be enabled on the interface connected to your clients — <strong>IP → Hotspot → Hotspot Setup</strong></li>
+            <li><span class="arrow">→</span> Create at least one hotspot user profile — <strong>IP → Hotspot → User Profiles</strong></li>
+            <li><span class="arrow">→</span> Make sure DNS is working on your MikroTik — <strong>IP → DNS</strong></li>
+            <li><span class="arrow">→</span> Enable API service as described above</li>
+            <li><span class="arrow">→</span> Note your MikroTik's local IP address (usually <code>192.168.88.1</code>)</li>
+        </ul>
+        <div class="note-box">
+            <strong>⚠ Important:</strong> MikhMon CE does NOT use a radius server. It communicates directly with MikroTik via the RouterOS API on port 8728.
+        </div>
+    </div>
+
+    <!-- Guide 4: Default Credentials -->
+    <div class="guide-card">
+        <h3>
+            🔐 Change Default Login Credentials
+            <span class="guide-badge essential">Essential</span>
+        </h3>
+        <p>MikhMon CE ships with default credentials. Change them immediately after first login.</p>
+        <ul class="guide-steps">
+            <li><span class="arrow">→</span> Login with <code>admin</code> / <code>admin</code></li>
+            <li><span class="arrow">→</span> Go to <strong>Admin Settings</strong> (gear icon in the sidebar)</li>
+            <li><span class="arrow">→</span> Change your <strong>Username</strong> and <strong>Password</strong></li>
+            <li><span class="arrow">→</span> Click <strong>Save</strong></li>
+        </ul>
+        <div class="note-box">
+            <strong>⚠ Before updating MikhMon CE:</strong> Always back up your <code>include/config.php</code> file before replacing files with a new release. This file stores your credentials and will be overwritten if not backed up.
+        </div>
+    </div>
+</section>
+
+<hr class="divider">
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-brand">MikhMon <span>CE</span></div>
+    <p>Community Edition — Free and Open Source</p>
+    <div class="footer-links">
+        <a href="https://github.com/kenweill/mikhmon-ce" target="_blank">GitHub</a>
+        <a href="https://github.com/kenweill/mikhmon-ce/releases" target="_blank">Releases</a>
+        <a href="https://github.com/kenweill/mikhmon-ce/blob/main/CHANGELOG.md" target="_blank">Changelog</a>
+        <a href="https://github.com/laksa19/mikhmonv3" target="_blank">Original MikhMon</a>
+    </div>
+    <p>Based on <a href="https://github.com/laksa19/mikhmonv3" target="_blank">MikhMon</a> by Laksamadi Guko &nbsp;|&nbsp;
+       ROS7 workaround by <a href="https://www.youtube.com/c/VanzJTutorials" target="_blank">Vanz J Tutorials</a></p>
+    <p style="margin-top:0.5rem">© <span id="year"></span> MikhMon CE Community &nbsp;|&nbsp; GPL v2</p>
+</footer>
+
+<script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    function showTab(name) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+        document.getElementById('tab-' + name).classList.add('active');
+        event.target.classList.add('active');
+    }
+</script>
+
+</body>
+</html>
