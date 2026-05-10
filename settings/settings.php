@@ -259,7 +259,7 @@ if (!isset($_SESSION["mikhmon"])) {
  *   All other domains showed "Fitur tidak support" (Feature not supported)
  *   MikhMon CE removes this restriction - ping test works on all domains
  *
- * _0x8202 - Brand tamper check LEFT INTACT (high risk - deferred)
+ * _0x8202 - Brand tamper check REMOVED (see below)
  *   Checks if #brand element says "MIKHMON" - risky to remove without testing
  *
  * _0xdf1e - Session name validator DEOBFUSCATED
@@ -275,8 +275,15 @@ var sessX = document.settings.sessname.value;
 document.getElementById("ping_test").onclick = function() { pingTest(sessX); };
 function closeX() { $("#pingX").hide(); }
 
-/* Brand tamper check - left intact pending safe removal (high risk) */
-var _0x8202=["\x62\x72\x61\x6E\x64","\x67\x65\x74\x45\x6C\x65\x6D\x65\x6E\x74\x42\x79\x49\x64","\x69\x6E\x6E\x65\x72\x48\x54\x4D\x4C","\x4D\x49\x4B\x48\x4D\x4F\x4E","\x64\x69\x73\x70\x6C\x61\x79","\x73\x74\x79\x6C\x65","\x6E\x6F\x6E\x65","\x62\x6F\x64\x79","\x67\x65\x74\x45\x6C\x65\x6D\x65\x6E\x74\x73\x42\x79\x54\x61\x67\x4E\x61\x6D\x65","\x3C\x63\x65\x6E\x74\x65\x72\x3E\x3C\x68\x31\x20\x73\x74\x79\x6C\x65\x3D\x22\x6D\x61\x72\x67\x69\x6E\x2D\x74\x6F\x70\x3A\x33\x30\x25\x3B\x22\x3E\x3A\x28\x3C\x62\x72\x3E\x59\x6F\x75\x20\x64\x65\x73\x74\x72\x6F\x79\x20\x4D\x49\x4B\x48\x4D\x4F\x4E\x3C\x2F\x68\x31\x3E\x3C\x2F\x63\x65\x6E\x74\x65\x72\x3E"];if(!(document[_0x8202[1]](_0x8202[0]))|| document[_0x8202[1]](_0x8202[0])[_0x8202[2]]!= _0x8202[3] || document[_0x8202[1]](_0x8202[0])[_0x8202[5]][_0x8202[4]]== _0x8202[6]){document[_0x8202[8]](_0x8202[7])[0][_0x8202[2]]= (_0x8202[9])}else {document[_0x8202[1]](_0x8202[0])[_0x8202[2]]= _0x8202[3]}
+/*
+ * Removed: Brand tamper check (_0x8202) - MikhMon CE
+ *   Original code checked if #brand element said "MIKHMON" on page load
+ *   If brand didn't match, it destroyed the entire page body
+ *   Removed because:
+ *   1. MikhMon CE is open source (GPL v2) - rebranding is permitted
+ *   2. This check ran once on settings page load only
+ *   3. No functional purpose beyond protecting original branding
+ */
 
 /* Session name validator - deobfuscated, updated for MikhMon CE */
 var sesname = document.settings.sessname;
