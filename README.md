@@ -106,19 +106,13 @@ Then open `http://localhost/mikhmon-ce`
 - **Background scheduler script** - updated to parse both date formats for expiry checking
 - **Uptime/session-time displays** - work correctly on both ROS versions
 
----
+### Code Quality
 
-## Known Limitations
-
-### Tamper Protection (Partially Retained)
-
-The original MikhMon includes a tamper detection mechanism via obfuscated JavaScript (notably the `_0x8202` array in `mikhmon.js`). This detects branding changes and can trigger a "You destroy MIKHMON" message, breaking core functionality.
-
-Attempts to remove this protection currently cause multiple features to break, indicating tight coupling with core logic. For this release, tamper protection remains in place to preserve stability.
-
-### Obfuscated JavaScript (Partially Retained)
-
-Some obfuscated JavaScript remains due to dependencies tied to core features. Deobfuscation is ongoing — see Roadmap below for detailed progress.
+- All obfuscated JavaScript fully removed and replaced with clean, readable code
+- Tamper protection completely removed - MikhMon CE is freely rebrandable (GPL v2)
+- Domain whitelist restrictions removed - works on any domain or local installation
+- Anti-piracy alerts removed - not real security, page access already protected by PHP
+- All branding references updated from MIKHMON to MikhMon CE throughout the codebase
 
 ---
 
@@ -126,7 +120,7 @@ Some obfuscated JavaScript remains due to dependencies tied to core features. De
 
 ### Deobfuscation Progress
 
-The original MikhMon codebase contains obfuscated JavaScript across multiple files. We are gradually replacing all obfuscated code with clean, readable equivalents. Below is the full status:
+All obfuscated JavaScript has been fully removed and replaced with clean, readable equivalents.
 
 #### Low Priority - Display/Cosmetic Only
 | File | Variable | What It Does | Status |
@@ -144,18 +138,18 @@ The original MikhMon codebase contains obfuscated JavaScript across multiple fil
 | `settings/settings.php` | `_0xdf1e` | Session name validator | ✅ Done |
 | `settings/settings.php` | `_0x1d39` | Domain whitelist restriction | ✅ Done |
 
-#### High Priority - Tamper Protection (Risky)
+#### High Priority - Tamper Protection
 | File | Variable | What It Does | Status |
 |---|---|---|---|
-| `js/mikhmon.js` | `_0x8202` | Brand tamper check - destroys page if brand changed | ⚠️ Needs careful handling |
-| `settings/settings.php` | `_0x8202` | Same brand tamper check embedded in settings page | ✅ Done |
+| `js/mikhmon.js` | `_0x8202` | Brand tamper check - destroyed page if brand changed | ✅ Done |
+| `settings/settings.php` | `_0x8202` | Same brand tamper check on settings page | ✅ Done |
 
 ### Other Roadmap Items
 
-- [ ] Complete deobfuscation of all medium priority files
-- [ ] Safely remove tamper protection without breaking functionality
-- [ ] Decouple branding logic from core system behavior
-- [ ] Achieve fully open-source structure where rebranding is safe
+- [x] Complete deobfuscation of all files
+- [x] Remove tamper protection safely
+- [x] Decouple branding logic from core system behavior
+- [x] Achieve fully open-source structure where rebranding is safe
 - [ ] RouterOS 7.x real-world testing and verification
 - [ ] Version check system pointing to MikhMon CE GitHub releases
 - [ ] Auto-update feature for easier upgrades
@@ -167,11 +161,10 @@ The original MikhMon codebase contains obfuscated JavaScript across multiple fil
 Contributions are welcome! Areas where help is especially needed:
 
 - Testing on RouterOS 7.x devices
-- Safely removing tamper protection (`_0x8202`) from `mikhmon.js` and `settings/settings.php`
-- Refactoring remaining obfuscated JavaScript (see Roadmap above)
+- Reporting bugs or unexpected behavior
+- Feature requests and improvements
 
-> Note for fork maintainers: Removing tamper-related code may currently break parts of the system.
-> Full rebranding support is a work in progress. Please retain the GPL v2 license and proper credit to the original author.
+> Please retain the GPL v2 license and proper credit to the original author when forking.
 
 ---
 
