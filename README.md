@@ -56,6 +56,11 @@ The Windows Bundle includes everything you need - no additional software require
 > Visual C++ Redistributable 2019 x64 from Microsoft:
 > https://aka.ms/vs/17/release/vc_redist.x64.exe
 
+> Note: Windows may show a "Windows protected your PC" SmartScreen warning
+> when running MikhMonCE_Server.exe for the first time. This is expected for
+> unsigned executables. Click **More info** then **Run anyway** to proceed.
+> Windows will remember your choice and not ask again.
+
 ### Option 2 - Standard (Windows, Linux, macOS with existing web server)
 
 1. Download the Standard version from the [releases page](https://github.com/kenweill/mikhmon-ce/releases)
