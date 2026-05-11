@@ -27,7 +27,7 @@ session_start();
     </div>
     <div class="card-body">
       <div class="text-center pd-5">
-        <img src="img/favicon.png" width="350"alt="Milagros WiFi Logo">
+        <img src="img/logo.png" width="350"alt="Milagros WiFi Logo">
       </div>
       
       <center>
