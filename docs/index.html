@@ -516,7 +516,7 @@
 <div class="hero">
     <img src="https://raw.githubusercontent.com/kenweill/mikhmon-ce/main/launcher/mikhmon-ce-icon.png"
          alt="MikhMon CE Logo" class="hero-logo"
-         onerror="this.style.display='none'">    
+         onerror="this.style.display='none'">
     <h1>MikhMon <span style="color: #ff3131;">CE</span></h1>
     <p class="hero-desc">
         Free, open-source MikroTik hotspot manager.
@@ -616,6 +616,7 @@
                     <li>Download the Windows Bundle from the <a href="https://github.com/kenweill/mikhmon-ce/releases" target="_blank">releases page</a></li>
                     <li>Extract the ZIP to your drive root — e.g. <code>C:\MikhMonCE-Windows\</code> or <code>D:\MikhMonCE-Windows\</code></li>
                     <li>Open the extracted folder and double-click <code>MikhMonCE_Server.exe</code></li>
+                    <li>Windows may show a SmartScreen warning — click <strong>More info</strong> then <strong>Run anyway</strong></li>
                     <li>The server starts automatically and minimizes to the system tray</li>
                     <li>Right-click the tray icon and select <strong>Open MikhMon</strong></li>
                     <li>Login with <code>admin</code> / <code>admin</code></li>
@@ -833,6 +834,14 @@
         <div class="section-label">Help</div>
         <h2 class="section-title">Troubleshooting</h2>
         <p class="section-desc">Common issues and how to fix them.</p>
+
+        <div class="trouble-item">
+            <h4>&#9888; Windows protected your PC — SmartScreen warning</h4>
+            <p>Windows Defender SmartScreen shows a warning when running MikhMonCE_Server.exe for the first time. This is expected for unsigned executables and the app is safe to run.</p>
+            <div class="fix">
+                <strong>Fix:</strong> Click <strong>More info</strong> (small link below the warning text) then click <strong>Run anyway</strong>. Windows will remember your choice and will not show this warning again.
+            </div>
+        </div>
 
         <div class="trouble-item">
             <h4>&#9888; php.exe - Application Error (0xc000007b)</h4>
