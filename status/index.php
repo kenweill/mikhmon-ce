@@ -40,7 +40,7 @@ $cekindo['indo'] = array('RP', 'Rp', 'rp', 'IDR', 'idr', 'RP.', 'Rp.', 'rp.', 'I
 $API = new RouterosAPI();
 $API->debug = false;
 if ($currency == in_array($currency, $cekindo['indo'])) {
-	$title = array("Status Voucher", "User/Kode Voucher", "Paket", "Lama Terhubung", "Pemakaian Data", "Sisa Data", "Masa Aktif", "Dari", "Sampai", "tidak terdaftar.", "sudah kadaluarsa.", "Tanggal", "Cek Status", " Hari", " Jam", "Aktif", "Expired");
+	$title = array("Voucher Status", "User/Voucher Code", "Package", "Connected Time", "Data Usage", "Remaining Data", "Expirtif", "Dari", "Sampai", "tidak terdaftar.", "sudah kadaluarsa.", "Tanggal", "Cek Status", " Hari", " Jam", "Aktif", "Expired");
 } else {
 	$title = array("Voucher Status", "User/Voucher Code", "Profile", "Uptime", "Data Usage", "Data Remaining", "Validity", "Start", "End", "not registered.", "expired.", "Date", "Check Status", " Day", " Hour", "Active", "Expired");
 }

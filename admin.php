@@ -125,7 +125,7 @@ if ($id == "login" || substr($url, -1) == "p") {
     $_SESSION["connect"] = "<b class='text-red'>Not Connected</b>";
     $nl = '\n';
     if ($currency == in_array($currency, $cekindo['indo'])) {
-      echo "<script>alert('Mikhmon not connected!".$nl."Please check IP, Username, Password and make sure the API port is enabled.".$nl."Jika menggunakan koneksi VPN, pastikan VPN tersebut terkoneksi.')</script>";
+      echo "<script>alert('Mikhmon not connected!".$nl."Silakan periksa kembali IP, User, Password dan port API harus enable.".$nl."Jika menggunakan koneksi VPN, pastikan VPN tersebut terkoneksi.')</script>";
     }else{
       echo "<script>alert('Mikhmon not connected!".$nl."Please check the IP, User, Password and port API must be enabled.')</script>";
     }
