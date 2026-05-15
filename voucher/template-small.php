@@ -14,7 +14,7 @@
 <!-- Username = Password    -->
 <?php if ($usermode == "vc") { ?>
         <tr>
-          <td >Kode Voucher</td>
+          <td >Voucher Code</td>
         </tr>
         <tr style="color: black; font-size: 14px;">
           <td style="width:100%; border: 1px solid black; font-weight:bold;"><?= $username; ?></td>
