@@ -3,7 +3,7 @@ All notable changes to this project are documented here.
 
 ---
 
-## [Unreleased]
+## [1.3.1] - 2026-05-16
 
 ### 🔧 Fixed
 - **`hotspot/users.php`** — Initialized `$acomment` to an empty string before the concatenation loop; previously undefined, causing a leading empty entry in the comment filter dropdown
