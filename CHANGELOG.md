@@ -3,7 +3,7 @@ All notable changes to this project are documented here.
 
 ---
 
-## [Unreleased]
+## [1.3.2] - 2026-05-17
 
 ### 🔧 Fixed
 - **`settings/settings.php`** — Session name is now forced to lowercase and stripped of all non-alphanumeric characters on both the JavaScript and PHP sides. JS validator updated to silently convert to lowercase as the user types, then block entries with spaces or special characters with an alert. PHP sanitization changed from converting spaces to hyphens to fully stripping anything outside `[a-z0-9]`. Reserved name list simplified to lowercase-only since input is now always lowercase. Fixes a major bug where session names with hyphens, mixed case, or special characters caused broken connectivity, inability to edit/delete router profiles, and general config corruption
