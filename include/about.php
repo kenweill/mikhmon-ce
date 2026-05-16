@@ -66,4 +66,78 @@ if (!isset($_SESSION["mikhmon"])) {
       </div>
     </div>
   </div>
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fa fa-file-text-o"></i> Changelog</h3>
+      </div>
+      <div class="card-body" style="max-height:400px; overflow-y:auto;">
+        <?php
+        $changelog = @file('https://raw.githubusercontent.com/kenweill/mikhmon-ce/main/CHANGELOG.md');
+        if (!$changelog) $changelog = @file('./CHANGELOG.md');
+        if (!$changelog) $changelog = [];
+        foreach ($changelog as $line) {
+          $line = rtrim($line);
+
+          // skip the h1 title line
+          if (preg_match('/^# /', $line)) continue;
+
+          // horizontal rule
+          if (preg_match('/^---$/', $line)) {
+            if ($in_list) { echo '</ul>'; $in_list = false; }
+            echo '<hr>';
+            continue;
+          }
+
+          // h2 — version headings
+          if (preg_match('/^## (.+)$/', $line, $m)) {
+            if ($in_list) { echo '</ul>'; $in_list = false; }
+            echo '<h4 style="margin-top:10px;"><strong>' . htmlspecialchars($m[1]) . '</strong></h4>';
+            continue;
+          }
+
+          // h3 — section headings
+          if (preg_match('/^### (.+)$/', $line, $m)) {
+            if ($in_list) { echo '</ul>'; $in_list = false; }
+            echo '<h5 style="margin-top:8px;">' . htmlspecialchars($m[1]) . '</h5>';
+            continue;
+          }
+
+          // blockquote
+          if (preg_match('/^> (.+)$/', $line, $m)) {
+            if ($in_list) { echo '</ul>'; $in_list = false; }
+            echo '<blockquote style="border-left:3px solid #ccc;padding-left:10px;color:#666;">' . htmlspecialchars($m[1]) . '</blockquote>';
+            continue;
+          }
+
+          // list item
+          if (preg_match('/^- (.+)$/', $line, $m)) {
+            if (!$in_list) { echo '<ul>'; $in_list = true; }
+            $text = htmlspecialchars($m[1]);
+            // bold **text**
+            $text = preg_replace('/\*\*(.+?)\*\*/', '<strong>$1</strong>', $text);
+            // inline code `text`
+            $text = preg_replace('/`(.+?)`/', '<code>$1</code>', $text);
+            echo '<li style="margin-bottom:4px;">' . $text . '</li>';
+            continue;
+          }
+
+          // blank line
+          if ($line === '') {
+            if ($in_list) { echo '</ul>'; $in_list = false; }
+            continue;
+          }
+
+          // plain paragraph text
+          if ($in_list) { echo '</ul>'; $in_list = false; }
+          $text = htmlspecialchars($line);
+          $text = preg_replace('/\*\*(.+?)\*\*/', '<strong>$1</strong>', $text);
+          $text = preg_replace('/`(.+?)`/', '<code>$1</code>', $text);
+          echo '<p>' . $text . '</p>';
+        }
+        if ($in_list) echo '</ul>';
+        ?>
+      </div>
+    </div>
+  </div>
 </div>
