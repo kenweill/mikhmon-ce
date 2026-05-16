@@ -3,6 +3,20 @@ All notable changes to this project are documented here.
 
 ---
 
+## [Unreleased]
+
+### 🔧 Fixed
+- **`hotspot/users.php`** — Initialized `$acomment` to an empty string before the concatenation loop; previously undefined, causing a leading empty entry in the comment filter dropdown
+- **`hotspot/users.php`** — Moved `</tr>` inside the user table loop so every row is properly closed; it was placed outside the loop, leaving all rows except the last unclosed
+- **`include/readcfg.php`** — Removed dead `$sesname` variable that read from `$data[$session][10]` using the wrong delimiter (`+`); the field uses `=` for idle timeout, making `$sesname` always empty and never used
+- **`hotspot/userbyname.php`** — Added missing `name="mac"` attribute to the Mac Address input field and wired `mac-address` into the RouterOS API set call; previously the MAC was displayed but never saved on form submit
+- **`process/removehotspotuserbycomment.php`** — Added script and scheduler cleanup before user removal to match the behaviour of `removehotspotuser.php`; orphaned RouterOS scripts and schedulers were left behind on every bulk delete-by-comment. Added null/empty guards so users with no linked script or scheduler (e.g. manually created users) are safely skipped without sending a bad API call
+- **`process/removeexpiredhotspotuser.php`** — Same orphan cleanup fix applied to the remove-expired-users bulk action, with the same null/empty guards
+- **`hotspot/generateuser.php`** — Fixed `=` (assignment) used instead of `==` (comparison) in the Close button `elseif` condition; the branch always evaluated to true, so Close always navigated to `users-by-profile` regardless of where the user came from
+- **`hotspot/generateuser.php`** — Removed duplicate `<option>4</option>` from the user length dropdown; `4` appeared twice, making the list start at 4 twice and skipping the correct order from 3 upward
+
+---
+
 ## [1.3.0]
 > Full deobfuscation release — MikhMon CE is now completely open source with no hidden code.
 
