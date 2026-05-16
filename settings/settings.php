@@ -57,23 +57,21 @@ if (!isset($_SESSION["mikhmon"])) {
     //$sinfolp = ($_POST['infolp']);
     $sidleto = ($_POST['idleto']);
 
-    $sesname = (preg_replace('/\s+/', '-', $_POST['sessname']));
+    $sesname = preg_replace('/[^a-z0-9]/', '', strtolower($_POST['sessname']));
     $slivereport = ($_POST['livereport']);
 
     $search = array('1' => "$session!$iphost", "$session@|@$userhost", "$session#|#$passwdhost", "$session%$hotspotname", "$session^$dnsname", "$session&$currency", "$session*$areload", "$session($iface", "$session)$infolp", "$session=$idleto", "'$session'", "$session@!@$livereport");
 
     $replace = array('1' => "$sesname!$siphost", "$sesname@|@$suserhost", "$sesname#|#$spasswdhost", "$sesname%$shotspotname", "$sesname^$sdnsname", "$sesname&$scurrency", "$sesname*$sreload", "$sesname($siface", "$sesname)$sinfolp", "$sesname=$sidleto", "'$sesname'", "$sesname@!@$slivereport");
 
-    for ($i = 1; $i < 15; $i++) {
-      $file = file("./include/config.php");
-      $content = file_get_contents("./include/config.php");
-      $newcontent = str_replace((string)$search[$i], (string)$replace[$i], "$content");
-      file_put_contents("./include/config.php", "$newcontent");
+    $cfg = file_get_contents("./include/config.php");
+    for ($i = 1; $i <= 12; $i++) {
+      $cfg = str_replace((string)$search[$i], (string)$replace[$i], $cfg);
     }
-    $_SESSION["connect"] = "";
-    echo "<script>window.location='./admin.php?id=settings&session=" . $sesname . "'</script>";
+    file_put_contents("./include/config.php", $cfg);
+    echo "<script>window.location='./admin.php?id=sessions'</script>";
   }
-  if ($currency == "") {
+  if ($currency == "" && !isset($_POST['save'])) {
     echo "<script>window.location='./admin.php?id=settings&session=" . $session . "'</script>";
   }
 }
@@ -288,11 +286,22 @@ function closeX() { $("#pingX").hide(); }
 /* Session name validator - deobfuscated, updated for MikhMon CE */
 var sesname = document.settings.sessname;
 function chksname() {
-    var reserved = ["mikhmon", "MIKHMON", "Mikhmon", "mikhmon-ce", "MikhMonCE", "mikhmonCE"];
+    sesname.value = sesname.value.toLowerCase();
+    var reserved = ["mikhmon", "mikhmoncc", "mikhmonee"];
+    if (/\s/.test(sesname.value)) {
+        alert("Session name cannot contain spaces.");
+        sesname.value = "";
+        return;
+    }
+    if (!/^[a-z0-9]*$/.test(sesname.value)) {
+        alert("Session name must contain letters and numbers only.");
+        sesname.value = "";
+        return;
+    }
     if (reserved.indexOf(sesname.value) >= 0) {
         alert("You cannot use " + sesname.value + " as a session name.");
         sesname.value = "";
-        window.location.reload();
+        return;
     }
 }
 sesname.onkeyup = chksname;
