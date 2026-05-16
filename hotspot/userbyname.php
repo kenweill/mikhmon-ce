@@ -226,6 +226,7 @@ if ($currency == in_array($currency, $cekindo['indo'])) {
     $comment2 = ($_POST['comment2']);
     $hcomment = ($_POST['h_comment']);
     $mbgb = ($_POST['mbgb']);
+    $mac = ($_POST['mac']);
     if ($timelimit == "") {
       $timelimit = "0";
     } else {
@@ -261,6 +262,7 @@ if ($currency == in_array($currency, $cekindo['indo'])) {
       "disabled" => "$disabled",
       "limit-uptime" => "$timelimit",
       "limit-bytes-total" => "$datalimit",
+      "mac-address" => "$mac",
       "comment" => "$comment",
     ));
     echo "<script>window.location='./?hotspot-user=" . $uid . "&session=" . $session . "'</script>";
@@ -378,7 +380,7 @@ include('./voucher/printbt.php');
 		</td>
 	</tr>
   <tr>
-    <td class="align-middle">Mac Address</td><td><input class="form-control" type="text" value="<?= $umac; ?>"></td>
+    <td class="align-middle">Mac Address</td><td><input class="form-control" type="text" name="mac" value="<?= $umac; ?>"></td>
   </tr>
   <tr>
     <td class="align-middle">Uptime</td><td><input class="form-control" type="text" value="<?php if ($uuptime == 0) {
