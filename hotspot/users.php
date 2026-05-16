@@ -119,6 +119,7 @@ if (!isset($_SESSION["mikhmon"])) {
       echo "<option value=''>".$_comment."</option>";
     }
     $TotalReg = count($getuser);
+    $acomment = "";
     for ($i = 0; $i < $TotalReg; $i++) {
       $ucomment = $getuser[$i]['comment'];
       $uprofile = $getuser[$i]['profile'];
@@ -252,11 +253,10 @@ for ($i = 0; $i < $TotalReg; $i++) {
     echo $ucomment.' ';
   }
   echo  "</td>";
-
+  echo "</tr>";
 
 }
 ?>
-  </tr>
   </tbody>
 </table>
 </div>
