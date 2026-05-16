@@ -24,16 +24,6 @@ if (!isset($_SESSION["mikhmon"])) {
 } else {
 
   if ($id == "settings" && explode("-",$router)[0] == "new" && !isset($_POST['save'])) {
-    $data = '$data';
-    $f = fopen('./include/config.php', 'a');
-    fwrite($f, "\n'$'data['".$router."'] = array ('1'=>'".$router."!','".$router."@|@','".$router."#|#','".$router."%','".$router."^','".$router."&Rp','".$router."*10','".$router."(1','".$router.")','".$router."=10','".$router."@!@disable');");
-    fclose($f);
-    $search = "'$'data";
-    $replace = (string)"$data";
-    $file = file("./include/config.php");
-    $content = file_get_contents("./include/config.php");
-    $newcontent = str_replace((string)$search, (string)$replace, "$content");
-    file_put_contents("./include/config.php", "$newcontent");
     echo "<script>window.location='./admin.php?id=settings&session=" . $router . "'</script>";
   }
 
@@ -53,26 +43,38 @@ if (!isset($_SESSION["mikhmon"])) {
     }
     $siface = ($_POST['iface']);
     $sinfolp = implode('', unpack("H*", $_POST['infolp']));
-    //$sinfolp = encrypt($_POST['infolp']);
-    //$sinfolp = ($_POST['infolp']);
     $sidleto = ($_POST['idleto']);
 
     $sesname = preg_replace('/[^a-z0-9]/', '', strtolower($_POST['sessname']));
     $slivereport = ($_POST['livereport']);
 
-    $search = array('1' => "$session!$iphost", "$session@|@$userhost", "$session#|#$passwdhost", "$session%$hotspotname", "$session^$dnsname", "$session&$currency", "$session*$areload", "$session($iface", "$session)$infolp", "$session=$idleto", "'$session'", "$session@!@$livereport");
+    if (explode("-", $session)[0] == "new") {
+      // Brand new router — write directly to config using the actual session name
+      $data = '$data';
+      $newentry = "\n\$data['" . $sesname . "'] = array ('1'=>'" . $sesname . "!" . $siphost . "','" . $sesname . "@|@" . $suserhost . "','" . $sesname . "#|#" . $spasswdhost . "','" . $sesname . "%" . $shotspotname . "','" . $sesname . "^" . $sdnsname . "','" . $sesname . "&" . $scurrency . "','" . $sesname . "*" . $sreload . "','" . $sesname . "(" . $siface . "','" . $sesname . ")" . $sinfolp . "','" . $sesname . "=" . $sidleto . "','" . $sesname . "@!@" . $slivereport . "');";
+      file_put_contents("./include/config.php", $newentry, FILE_APPEND);
+    } else {
+      // Existing router — rename and update via str_replace
+      $search = array('1' => "$session!$iphost", "$session@|@$userhost", "$session#|#$passwdhost", "$session%$hotspotname", "$session^$dnsname", "$session&$currency", "$session*$areload", "$session($iface", "$session)$infolp", "$session=$idleto", "'$session'", "$session@!@$livereport");
 
-    $replace = array('1' => "$sesname!$siphost", "$sesname@|@$suserhost", "$sesname#|#$spasswdhost", "$sesname%$shotspotname", "$sesname^$sdnsname", "$sesname&$scurrency", "$sesname*$sreload", "$sesname($siface", "$sesname)$sinfolp", "$sesname=$sidleto", "'$sesname'", "$sesname@!@$slivereport");
+      $replace = array('1' => "$sesname!$siphost", "$sesname@|@$suserhost", "$sesname#|#$spasswdhost", "$sesname%$shotspotname", "$sesname^$sdnsname", "$sesname&$scurrency", "$sesname*$sreload", "$sesname($siface", "$sesname)$sinfolp", "$sesname=$sidleto", "'$sesname'", "$sesname@!@$slivereport");
 
-    $cfg = file_get_contents("./include/config.php");
-    for ($i = 1; $i <= 12; $i++) {
-      $cfg = str_replace((string)$search[$i], (string)$replace[$i], $cfg);
+      $cfg = file_get_contents("./include/config.php");
+      for ($i = 1; $i <= 12; $i++) {
+        $cfg = str_replace((string)$search[$i], (string)$replace[$i], $cfg);
+      }
+      file_put_contents("./include/config.php", $cfg);
     }
-    file_put_contents("./include/config.php", $cfg);
     echo "<script>window.location='./admin.php?id=sessions'</script>";
   }
-  if ($currency == "" && !isset($_POST['save'])) {
+  if ($currency == "" && !isset($_POST['save']) && explode("-", $session)[0] != "new") {
     echo "<script>window.location='./admin.php?id=settings&session=" . $session . "'</script>";
+  }
+
+  if (explode("-", $session)[0] == "new") {
+    $areload = 10;
+    $idleto = 10;
+    $iface = 1;
   }
 }
 ?>
@@ -189,7 +191,7 @@ if (!isset($_SESSION["mikhmon"])) {
 	<td class="align-middle"><?= $_dns_name ?>  </td><td><input class="form-control" type="text" size="15" maxlength="500" name="dnsname" title="DNS Name [IP->Hotspot->Server Profiles->DNS Name]" value="<?= $dnsname; ?>" required="1"/></td>
 	</tr>
 	<tr>
-	<td class="align-middle"><?= $_currency ?>  </td><td><input class="form-control" type="text" size="3" maxlength="4" name="currency" title="currency" value="<?= $currency; ?>" required="1"/></td>
+	<td class="align-middle"><?= $_currency ?>  </td><td><input class="form-control" type="text" size="3" maxlength="4" name="currency" title="currency" value="<?= $currency; ?>" placeholder="e.g. Rp, Php, USD" required="1"/></td>
 	</tr>
 	<tr> 
 	<td class="align-middle"><?= $_auto_reload ?></td><td>
