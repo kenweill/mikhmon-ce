@@ -3,9 +3,20 @@ All notable changes to this project are documented here.
 
 ---
 
+## [Unreleased]
+
+### 🔧 Fixed
+- **`settings/settings.php`** — Session name is now forced to lowercase and stripped of all non-alphanumeric characters on both the JavaScript and PHP sides. JS validator updated to silently convert to lowercase as the user types, then block entries with spaces or special characters with an alert. PHP sanitization changed from converting spaces to hyphens to fully stripping anything outside `[a-z0-9]`. Reserved name list simplified to lowercase-only since input is now always lowercase. Fixes a major bug where session names with hyphens, mixed case, or special characters caused broken connectivity, inability to edit/delete router profiles, and general config corruption
+
+### 🔍 Investigated & Dropped
+- **`hotspot/users.php`** — Attempted to fix a zero-user redirect: when filtering by a profile with no users, the page showed an empty table. A redirect back to all-users was added (`window.location` when `$counttuser == 0`). Two issues found during implementation: (1) `$counttuser` is an array from the RouterOS `count-only` API, not an integer, so the original comparison always failed; (2) after correcting the comparison and adding a `$prof` guard, testing revealed the redirect caused a regression — selecting an empty profile opened a different profile instead of redirecting cleanly. The empty table behavior is acceptable UX and the fix was fully reverted. **Do not attempt this fix again without first resolving how `$counttuser` is populated and why the profile context is lost during redirect.**
+
+---
+
 ## [1.3.1] - 2026-05-16
 
 ### 🔧 Fixed
+- **`settings/settings.php`** — Fixed session rename causing logout: two separate issues. First, the save loop wrote config.php 12 times sequentially (once per field) — replaced with a single atomic read-modify-write. Second, a `$currency == ""` guard that runs after save was triggering because `$data[$session]` no longer exists after a rename, making `$currency` empty and firing a redirect back to the old session name which no longer exists, eventually falling through to login. Fixed by adding `!isset($_POST['save'])` to the guard so it only runs on page load, not after a save
 - **`hotspot/users.php`** — Initialized `$acomment` to an empty string before the concatenation loop; previously undefined, causing a leading empty entry in the comment filter dropdown
 - **`hotspot/users.php`** — Moved `</tr>` inside the user table loop so every row is properly closed; it was placed outside the loop, leaving all rows except the last unclosed
 - **`include/readcfg.php`** — Removed dead `$sesname` variable that read from `$data[$session][10]` using the wrong delimiter (`+`); the field uses `=` for idle timeout, making `$sesname` always empty and never used
