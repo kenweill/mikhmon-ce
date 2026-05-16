@@ -295,7 +295,7 @@ date_default_timezone_set($_SESSION['timezone']);
 	<div>
 		<?php if ($_SESSION['ubp'] != "") {
 		echo "    <a class='btn bg-warning' href='./?hotspot=users&profile=" . $_SESSION['ubp'] . "&session=" . $session . "'> <i class='fa fa-close'></i> ".$_close."</a>";
-	} elseif ($_SESSION['vcr'] = "active") {
+	} elseif ($_SESSION['vcr'] == "active") {
 		echo "    <a class='btn bg-warning' href='./?hotspot=users-by-profile&session=" . $session . "'> <i class='fa fa-close'></i> ".$_close."</a>";
 	} else {
 		echo "    <a class='btn bg-warning' href='./?hotspot=users&profile=all&session=" . $session . "'> <i class='fa fa-close'></i> ".$_close."</a>";
@@ -346,8 +346,7 @@ date_default_timezone_set($_SESSION['timezone']);
   <tr>
     <td class="align-middle"><?= $_user_length ?></td><td>
       <select class="form-control " id="userl" name="userl" required="1">
-        <option>4</option>
-				<option>3</option>
+        <option>3</option>
 				<option>4</option>
 				<option>5</option>
 				<option>6</option>
