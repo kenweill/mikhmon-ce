@@ -142,7 +142,7 @@ if (!isset($_SESSION["mikhmon"])) {
   } elseif ($id == "sessions" || $id == "remove" || $router == "new") {
     $ssesslist = "active";
     $mpage = $_admin_settings;
-  } elseif ($id == "settings" && $session == "new") {
+  } elseif ($id == "settings" && explode("-", $session)[0] == "new") {
     $snsettings = "active";
     $mpage = $_add_router;
   } elseif ($id == "settings" || $id == "connect") {
@@ -207,7 +207,7 @@ if($idleto != "disable"){
 </div>
 
 <div id="sidenav" class="sidenav">
-<?php if (($id == "settings" && $session == "new") || $id == "settings" && $router == "new") {
+<?php if (($id == "settings" && explode("-", $session)[0] == "new") || ($id == "settings" && explode("-", $router)[0] == "new")) {
 }else if ($id == "settings" || $id == "editor"|| $id == "uplogo" || $id == "connect"){
 ?>  
   <div class="menu text-center align-middle card-header" style="border-radius:0;"><h3 id="MikhmonSession"><?= $session; ?></h3></div>
