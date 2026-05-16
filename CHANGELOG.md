@@ -3,6 +3,13 @@ All notable changes to this project are documented here.
 
 ---
 
+## [Unreleased]
+
+### ✨ Added
+- **`include/about.php`** — Changelog now displayed in the About page, parsed from `CHANGELOG.md` and rendered as HTML. Updates automatically whenever `CHANGELOG.md` is updated — no code changes needed. Displayed in a scrollable 400px box so the page stays clean as the changelog grows
+
+---
+
 ## [1.3.2] - 2026-05-17
 
 ### 🔧 Fixed
