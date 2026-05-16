@@ -6,7 +6,7 @@ All notable changes to this project are documented here.
 ## [Unreleased]
 
 ### ✨ Added
-- **`include/about.php`** — Changelog now displayed in the About page, parsed from `CHANGELOG.md` and rendered as HTML. Updates automatically whenever `CHANGELOG.md` is updated — no code changes needed. Displayed in a scrollable 400px box so the page stays clean as the changelog grows
+- **`include/about.php`** — Changelog now displayed in the About page, fetched live from GitHub raw URL so it updates automatically on every push without needing to pull changes to the server. Falls back to local `CHANGELOG.md` if GitHub is unreachable. Rendered as HTML from markdown. Displayed in a scrollable 400px box so the page stays clean as the changelog grows
 
 ---
 
