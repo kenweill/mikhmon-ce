@@ -29,6 +29,29 @@ $_SESSION['ubc'] = "";
 for ($i = 0; $i < $TotalReg; $i++) {
   $userdetails = $getuser[$i];
   $uid = $userdetails['.id'];
+  $name = $userdetails['name'];
+
+  $getscr = $API->comm("/system/script/print", array(
+    "?name" => "$name",
+  ));
+  $scr = $getscr[0]['.id'];
+
+  $getsch = $API->comm("/system/scheduler/print", array(
+    "?name" => "$name",
+  ));
+  $sch = $getsch[0]['.id'];
+
+  if (!empty($scr)) {
+    $API->comm("/system/script/remove", array(
+      ".id" => "$scr",
+    ));
+  }
+
+  if (!empty($sch)) {
+    $API->comm("/system/scheduler/remove", array(
+      ".id" => "$sch",
+    ));
+  }
 
   $API->comm("/ip/hotspot/user/remove", array(
     ".id" => "$uid",
