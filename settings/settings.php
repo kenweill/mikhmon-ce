@@ -23,7 +23,7 @@ if (!isset($_SESSION["mikhmon"])) {
   header("Location:../admin.php?id=login");
 } else {
 
-  if ($id == "settings" && explode("-",$router)[0] == "new") {
+  if ($id == "settings" && explode("-",$router)[0] == "new" && !isset($_POST['save'])) {
     $data = '$data';
     $f = fopen('./include/config.php', 'a');
     fwrite($f, "\n'$'data['".$router."'] = array ('1'=>'".$router."!','".$router."@|@','".$router."#|#','".$router."%','".$router."^','".$router."&Rp','".$router."*10','".$router."(1','".$router.")','".$router."=10','".$router."@!@disable');");
