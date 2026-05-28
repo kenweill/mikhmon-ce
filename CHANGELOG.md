@@ -3,10 +3,14 @@ All notable changes to this project are documented here.
 
 ---
 
-## [Unreleased]
+## [1.3.3] - 2026-05-28
 
 ### ✨ Added
 - **`include/about.php`** — Changelog now displayed in the About page, fetched live from GitHub raw URL so it updates automatically on every push without needing to pull changes to the server. Falls back to local `CHANGELOG.md` if GitHub is unreachable. Rendered as HTML from markdown. Displayed in a scrollable 400px box so the page stays clean as the changelog grows
+
+### 🔧 Fixed
+- **`process/removehotspotuserbycomment.php`** — Rewrote deletion loop to use batched API calls. Previously made 4-5 individual RouterOS API calls per user (script lookup, scheduler lookup, script remove, scheduler remove, user remove), causing severe slowdowns and timeouts on large batches — e.g. 170 vouchers required up to 850 sequential API calls. Now fetches all scripts and schedulers in one call each, matches by name in PHP, then removes all scripts, schedulers, and users in 3 total API calls regardless of batch size
+- **`process/removeexpiredhotspotuser.php`** — Same batched API call rewrite applied to expired user deletion
 
 ---
 
