@@ -27,36 +27,41 @@ $TotalReg = count($getuser);
 $_SESSION['ubp'] = $getuser[0]['profile'];
 $_SESSION['ubc'] = "";
 
+// Collect all user names for batch script/scheduler lookup
+$names = array();
+$uids = array();
 for ($i = 0; $i < $TotalReg; $i++) {
-  $userdetails = $getuser[$i];
-  $uid = $userdetails['.id'];
-  $name = $userdetails['name'];
+  $uids[] = $getuser[$i]['.id'];
+  $names[] = $getuser[$i]['name'];
+}
 
-  $getscr = $API->comm("/system/script/print", array(
-    "?name" => "$name",
-  ));
-  $scr = $getscr[0]['.id'];
+// Fetch all scripts and schedulers in one call each
+$allscripts = $API->comm("/system/script/print");
+$allschedulers = $API->comm("/system/scheduler/print");
 
-  $getsch = $API->comm("/system/scheduler/print", array(
-    "?name" => "$name",
-  ));
-  $sch = $getsch[0]['.id'];
-
-  if (!empty($scr)) {
-    $API->comm("/system/script/remove", array(
-      ".id" => "$scr",
-    ));
+// Match by name and collect IDs to remove
+$scrids = array();
+$schids = array();
+foreach ($allscripts as $scr) {
+  if (in_array($scr['name'], $names) && !empty($scr['.id'])) {
+    $scrids[] = $scr['.id'];
   }
-
-  if (!empty($sch)) {
-    $API->comm("/system/scheduler/remove", array(
-      ".id" => "$sch",
-    ));
+}
+foreach ($allschedulers as $sch) {
+  if (in_array($sch['name'], $names) && !empty($sch['.id'])) {
+    $schids[] = $sch['.id'];
   }
+}
 
-  $API->comm("/ip/hotspot/user/remove", array(
-    ".id" => "$uid",
-  ));
+// Batch remove scripts, schedulers, and users
+if (!empty($scrids)) {
+  $API->comm("/system/script/remove", array(".id" => implode(",", $scrids)));
+}
+if (!empty($schids)) {
+  $API->comm("/system/scheduler/remove", array(".id" => implode(",", $schids)));
+}
+if (!empty($uids)) {
+  $API->comm("/ip/hotspot/user/remove", array(".id" => implode(",", $uids)));
 }
 if ($_SESSION['ubp'] != "") {
   echo "<script>window.location='./?hotspot=users&profile=" . $_SESSION['ubp'] . "&session=" . $session . "'</script>";
