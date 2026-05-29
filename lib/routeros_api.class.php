@@ -772,12 +772,21 @@ function mikhmon_build_onlogin($expmode, $price, $validity, $sprice, $lock, $nam
         return ':put (",,' . $price . ',,,noexp,' . $lock . ',")' . $lockscript;
     }
 
-    // ROS7-compatible expiry script using scheduler trick
-    // Works on both ROS6 and ROS7
+    // ROS6 & ROS7 compatible expiry script using scheduler trick
     $expscript = '{' .
         ':local date [ /system clock get date ];' .
-        ':local year [ :pick $date 0 4 ];' .
-        ':local month [ :pick $date 5 7 ];' .
+        ':local year "";' .
+        ':local month "";' .
+        // Dual-format date detection
+        ':if ([:len $date] = 10 and [:pick $date 4] = "-") do={' .
+            // ROS7 format: yyyy-mm-dd
+            ':set year [:pick $date 0 4];' .
+            ':set month [:pick $date 5 7];' .
+        '} else={' .
+            // ROS6 format: mon/dd/yyyy
+            ':set year [:pick $date 7 11];' .
+            ':set month [:pick $date 0 3];' .
+        '};' .
         ':local comment [ /ip hotspot user get [/ip hotspot user find where name="$user"] comment];' .
         ':local ucode [:pic $comment 0 2];' .
         ':if ($ucode = "vc" or $ucode = "up" or $comment = "") do={' .
@@ -785,19 +794,22 @@ function mikhmon_build_onlogin($expmode, $price, $validity, $sprice, $lock, $nam
         ':delay 2s;' .
         ':local exp [ /sys sch get [ /sys sch find where name="$user" ] next-run];' .
         ':local getxp [len $exp];' .
+        // ROS7: next-run is yyyy-mm-dd HH:MM:SS (length 19) — use as-is
         ':if ($getxp = 19) do={' .
             '/ip hotspot user set comment=$exp [find where name="$user"];' .
         '};' .
+        // ROS6: next-run is mon/dd HH:MM:SS (length 15) — reconstruct with full year
         ':if ($getxp = 15) do={' .
             ':local d [:pic $exp 0 6];' .
-            ':local t [:pic $exp 7 16];' .
-            ':local s ("/");' .
-            ':local exp ("$d$s$year $t");' .
+            ':local t [:pic $exp 7 15];' .
+            ':local exp ("$d/$year $t");' .
             '/ip hotspot user set comment=$exp [find where name="$user"];' .
         '};' .
+        // ROS6: next-run is HH:MM:SS only (length 8) — same day expiry
         ':if ($getxp = 8) do={' .
             '/ip hotspot user set comment="$date $exp" [find where name="$user"];' .
         '};' .
+        // Catch-all for any other format longer than 15 that is not 19
         ':if ($getxp > 15 and $getxp != 19) do={' .
             '/ip hotspot user set comment=$exp [find where name="$user"];' .
         '};' .
