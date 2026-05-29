@@ -3,10 +3,12 @@ All notable changes to this project are documented here.
 
 ---
 
-## [Unreleased]
+## [1.3.4] - 2026-05-29
 
 ### 🔧 Fixed
 - **`hotspot/adduserprofile.php`**, **`hotspot/userprofilebyname.php`** — Mac Cookie Timeout on hotspot user profiles now matches the Validity value when an expiry mode is set. Previously it always defaulted to RouterOS's 3-day default regardless of the validity entered. When expiry mode is None, it keeps the 3-day default since there is no validity to use
+- **`lib/routeros_api.class.php`** — Fixed regression in `mikhmon_build_onlogin()` where `$year` and `$month` were extracted using ROS7 date positions but used inside the ROS6 `$getxp = 15` branch — causing broken expiry date reconstruction on ROS6. Rewrote date extraction with dual-format detection at runtime inside the on-login script: checks `[:len $date] = 10 and [:pick $date 4] = "-"` for ROS7 (`yyyy-mm-dd`), falls back to ROS6 (`mon/dd/yyyy`) otherwise. All four `$getxp` cases are handled including `= 19` for ROS7's longer timestamp. `mikhmon_build_bgservice()` was already ROS6/ROS7 compatible with dual-format `dateint` and `isvalid` checks — no changes needed there
+- **`hotspot/userprofilebyname.php`** — Replaced hardcoded inline `$onlogin` and `$bgservice` strings with calls to `mikhmon_build_onlogin()` and `mikhmon_build_bgservice()`. The edit profile page was bypassing the shared functions entirely, so fixes to `routeros_api.class.php` had no effect when editing existing profiles. Now both create and edit profile go through the same shared functions. Existing profiles should be re-saved through MikhMon CE to update their on-login and monitor scheduler scripts on MikroTik
 
 ---
 
