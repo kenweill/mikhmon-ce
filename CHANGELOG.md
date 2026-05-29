@@ -3,6 +3,13 @@ All notable changes to this project are documented here.
 
 ---
 
+## [Unreleased]
+
+### 🔧 Fixed
+- **`hotspot/adduserprofile.php`**, **`hotspot/userprofilebyname.php`** — Mac Cookie Timeout on hotspot user profiles now matches the Validity value when an expiry mode is set. Previously it always defaulted to RouterOS's 3-day default regardless of the validity entered. When expiry mode is None, it keeps the 3-day default since there is no validity to use
+
+---
+
 ## [1.3.3] - 2026-05-28
 
 ### ✨ Added
