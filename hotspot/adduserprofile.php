@@ -93,6 +93,7 @@ if (!isset($_SESSION["mikhmon"])) {
       //"transparent-proxy" => "yes",
       "on-login" => "$onlogin",
       "parent-queue" => "$parent",
+      "mac-cookie-timeout" => ($expmode != "0" && $validity != "" ? $validity : "3d"),
     ));
 
     if($expmode != "0"){
