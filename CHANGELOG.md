@@ -3,6 +3,14 @@ All notable changes to this project are documented here.
 
 ---
 
+## [Unreleased]
+
+### 🔧 Fixed
+- **`index.php`** — Fixed empty `elseif` branch that prevented live income (`#r_4`) from loading on initial dashboard open when router date equals cached income date (normal same-day case). Now `livereport.php` always loads on dashboard open; `totalHr` reset still only runs on date change
+- **`admin.php`** — Fixed fragile `$currency == in_array(...)` check (string vs bool comparison) to `isset($cekindo['indo']) && in_array(...)`
+
+---
+
 ## [1.3.4] - 2026-05-29
 
 ### 🔧 Fixed
