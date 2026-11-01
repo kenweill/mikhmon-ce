@@ -76,6 +76,21 @@ if (!isset($_SESSION["mikhmon"])) {
         $changelog = @file('https://raw.githubusercontent.com/kenweill/mikhmon-ce/main/CHANGELOG.md');
         if (!$changelog) $changelog = @file('./CHANGELOG.md');
         if (!$changelog) $changelog = [];
+        // escape text, then apply inline **bold** and `code`
+        $fmt = function ($t) {
+          $t = htmlspecialchars($t);
+          $t = preg_replace('/\*\*(.+?)\*\*/', '<strong>$1</strong>', $t);
+          return preg_replace('/`(.+?)`/', '<code>$1</code>', $t);
+        };
+        $in_list = false;  // inside a top-level <ul>
+        $li_open = false;  // a top-level <li> is open and may still receive sub-bullets
+        $in_sub = false;   // inside a nested <ul>
+        // close any open nested list, list item and list
+        $close_list = function () use (&$in_list, &$li_open, &$in_sub) {
+          if ($in_sub) { echo '</ul>'; $in_sub = false; }
+          if ($li_open) { echo '</li>'; $li_open = false; }
+          if ($in_list) { echo '</ul>'; $in_list = false; }
+        };
         foreach ($changelog as $line) {
           $line = rtrim($line);
 
@@ -84,58 +99,60 @@ if (!isset($_SESSION["mikhmon"])) {
 
           // horizontal rule
           if (preg_match('/^---$/', $line)) {
-            if ($in_list) { echo '</ul>'; $in_list = false; }
+            $close_list();
             echo '<hr>';
             continue;
           }
 
           // h2 — version headings
           if (preg_match('/^## (.+)$/', $line, $m)) {
-            if ($in_list) { echo '</ul>'; $in_list = false; }
+            $close_list();
             echo '<h4 style="margin-top:10px;"><strong>' . htmlspecialchars($m[1]) . '</strong></h4>';
             continue;
           }
 
           // h3 — section headings
           if (preg_match('/^### (.+)$/', $line, $m)) {
-            if ($in_list) { echo '</ul>'; $in_list = false; }
+            $close_list();
             echo '<h5 style="margin-top:8px;">' . htmlspecialchars($m[1]) . '</h5>';
             continue;
           }
 
           // blockquote
           if (preg_match('/^> (.+)$/', $line, $m)) {
-            if ($in_list) { echo '</ul>'; $in_list = false; }
+            $close_list();
             echo '<blockquote style="border-left:3px solid #ccc;padding-left:10px;color:#666;">' . htmlspecialchars($m[1]) . '</blockquote>';
             continue;
           }
 
-          // list item
+          // list item (the <li> stays open so it can hold sub-bullets)
           if (preg_match('/^- (.+)$/', $line, $m)) {
+            if ($in_sub) { echo '</ul>'; $in_sub = false; }
+            if ($li_open) { echo '</li>'; $li_open = false; }
             if (!$in_list) { echo '<ul>'; $in_list = true; }
-            $text = htmlspecialchars($m[1]);
-            // bold **text**
-            $text = preg_replace('/\*\*(.+?)\*\*/', '<strong>$1</strong>', $text);
-            // inline code `text`
-            $text = preg_replace('/`(.+?)`/', '<code>$1</code>', $text);
-            echo '<li style="margin-bottom:4px;">' . $text . '</li>';
+            echo '<li style="margin-bottom:4px;">' . $fmt($m[1]);
+            $li_open = true;
+            continue;
+          }
+
+          // nested list item (2 or more leading spaces) under the current list item
+          if ($li_open && preg_match('/^\s{2,}- (.+)$/', $line, $m)) {
+            if (!$in_sub) { echo '<ul style="margin-top:4px;">'; $in_sub = true; }
+            echo '<li style="margin-bottom:2px;">' . $fmt($m[1]) . '</li>';
             continue;
           }
 
           // blank line
           if ($line === '') {
-            if ($in_list) { echo '</ul>'; $in_list = false; }
+            $close_list();
             continue;
           }
 
           // plain paragraph text
-          if ($in_list) { echo '</ul>'; $in_list = false; }
-          $text = htmlspecialchars($line);
-          $text = preg_replace('/\*\*(.+?)\*\*/', '<strong>$1</strong>', $text);
-          $text = preg_replace('/`(.+?)`/', '<code>$1</code>', $text);
-          echo '<p>' . $text . '</p>';
+          $close_list();
+          echo '<p>' . $fmt($line) . '</p>';
         }
-        if ($in_list) echo '</ul>';
+        $close_list();
         ?>
       </div>
     </div>
