@@ -835,11 +835,15 @@ function mikhmon_build_onlogin($expmode, $price, $validity, $sprice, $lock, $nam
  * ROS6 & ROS7 compatible - checks both date formats
  */
 function mikhmon_build_bgservice($name, $mode) {
+    // Expiry monitor scheduler script. Works with ROS6 and ROS7 comment/date formats:
+    //   ROS6: jan/02/2026 10:00:00   (date 11 chars, time starts at 12)
+    //   ROS7: 2026-01-02 10:00:00    (date 10 chars, time starts at 11)
     return ':local dateint do={' .
         ':local montharray ("jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec");' .
         ':local dd; :local mm; :local yy;' .
-        // ROS7 format YYYY-MM-DD
-        ':if ([:len $d] = 10 and [:pick $d 4] = "-") do={' .
+        // ROS7 format YYYY-MM-DD. Detect by the dash at position 4 only: $d can be the
+        // full 19-character comment (date + time), so its length must not be checked.
+        ':if ([:pick $d 4] = "-") do={' .
             ':set yy [:tonum [:pick $d 0 4]];' .
             ':set mm [:tonum [:pick $d 5 7]];' .
             ':set dd [:tonum [:pick $d 8 10]];' .
@@ -847,15 +851,15 @@ function mikhmon_build_bgservice($name, $mode) {
         // ROS6 format mon/dd/yyyy
             ':set dd [:tonum [:pick $d 4 6]];' .
             ':set yy [:tonum [:pick $d 7 11]];' .
-            ':local month [:pick $d 0 3];' .
-            ':local monthint ([:find $montharray $month]);' .
-            ':set mm ($monthint + 1);' .
+            ':set mm ([:find $montharray [:pick $d 0 3]] + 1);' .
         '};' .
-        ':if ([len $mm] = 1) do={:return [:tonum ("$yy" . "0" . "$mm" . "$dd")];} else={:return [:tonum ("$yy$mm$dd")];}' .
+        // Arithmetic yyyymmdd. Do not build this by joining strings: tonum drops the
+        // leading zero of the day, which made early-month dates compare as expired.
+        ':return ($yy * 10000 + $mm * 100 + $dd);' .
     '}; ' .
     ':local timeint do={' .
-        ':local hours [:pick $t 0 2];' .
-        ':local minutes [:pick $t 3 5];' .
+        ':local hours [:tonum [:pick $t 0 2]];' .
+        ':local minutes [:tonum [:pick $t 3 5]];' .
         ':return ($hours * 60 + $minutes);' .
     '}; ' .
     ':local date [/system clock get date]; ' .
@@ -866,13 +870,11 @@ function mikhmon_build_bgservice($name, $mode) {
         ':local comment [/ip hotspot user get $i comment];' .
         ':local uname [/ip hotspot user get $i name];' .
         ':local gettime "";' .
-        // Handle both ROS6 comment format (mon/dd/yyyy HH:MM:SS) and ROS7 (YYYY-MM-DD HH:MM:SS)
-        ':if ([:len $comment] >= 19) do={:set gettime [:pick $comment 11 19];};' .
         ':local isvalid false;' .
-        // ROS7 format check: YYYY-MM-DD
-        ':if ([:pick $comment 4] = "-" and [:pick $comment 7] = "-") do={:set isvalid true;};' .
-        // ROS6 format check: mon/dd/yyyy  
-        ':if ([:pick $comment 3] = "/" and [:pick $comment 6] = "/") do={:set isvalid true;};' .
+        // ROS7 comment: YYYY-MM-DD HH:MM:SS, time at 11..19
+        ':if ([:pick $comment 4] = "-" and [:pick $comment 7] = "-") do={:set isvalid true; :set gettime [:pick $comment 11 19];};' .
+        // ROS6 comment: mon/dd/yyyy HH:MM:SS, time at 12..20
+        ':if ([:pick $comment 3] = "/" and [:pick $comment 6] = "/") do={:set isvalid true; :set gettime [:pick $comment 12 20];};' .
         ':if ($isvalid) do={' .
             ':local expd [$dateint d=$comment];' .
             ':local expt [$timeint t=$gettime];' .
