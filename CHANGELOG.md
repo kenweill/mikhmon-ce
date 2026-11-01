@@ -6,7 +6,7 @@ All notable changes to this project are documented here.
 ## [Unreleased]
 
 ### 🔧 Fixed
-- **`index.php`** — Fixed empty `elseif` branch that prevented live income (`#r_4`) from loading on initial dashboard open when router date equals cached income date (normal same-day case). Now `livereport.php` always loads on dashboard open; `totalHr` reset still only runs on date change
+- **`index.php`** — Dashboard live income now refreshes as soon as the dashboard opens, instead of showing cached figures for up to 65 seconds when the report date matches today. `totalHr` is still reset only on date change
 - **`admin.php`** — Fixed fragile `$currency == in_array(...)` check (string vs bool comparison) to `isset($cekindo['indo']) && in_array(...)`
 - **`lib/routeros_api.class.php`** — Fixed the expiry monitor scheduler (`mikhmon_build_bgservice()`) wrongly removing or limiting valid hotspot users (issue #1). After updating, re-save your hotspot profiles in MikhMon CE so the corrected scheduler script is written to the router. Three causes:
   - ROS7 expiry comments (`yyyy-mm-dd HH:MM:SS`, 19 characters) were never recognised as ROS7 because the format check also required the text to be exactly 10 characters, so they were read as nonsense dates. The format is now detected by the dash at position 4 only
