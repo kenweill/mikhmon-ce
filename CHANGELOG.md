@@ -3,7 +3,7 @@ All notable changes to this project are documented here.
 
 ---
 
-## [Unreleased]
+## [1.3.5] - 2026-11-01
 
 ### 🔧 Fixed
 - **`index.php`** — Dashboard live income now refreshes as soon as the dashboard opens, instead of showing cached figures for up to 65 seconds when the report date matches today. `totalHr` is still reset only on date change
