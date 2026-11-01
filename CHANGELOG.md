@@ -9,6 +9,9 @@ All notable changes to this project are documented here.
 - **`index.php`** — Fixed empty `elseif` branch that prevented live income (`#r_4`) from loading on initial dashboard open when router date equals cached income date (normal same-day case). Now `livereport.php` always loads on dashboard open; `totalHr` reset still only runs on date change
 - **`admin.php`** — Fixed fragile `$currency == in_array(...)` check (string vs bool comparison) to `isset($cekindo['indo']) && in_array(...)`
 
+### 🧹 Removed
+- **`index.php`**, **`include/menu.php`**, **`lang/en.php`**, **`lang/id.php`**, **`lang/es.php`**, **`lang/tl.php`**, **`process/removepactive.php`** — Removed dead PPP (secrets, profiles, active connections) code. MikhMon CE is hotspot-only: the `ppp/` folder was never part of the original MikhMon and has never existed in this project, and no menu item ever linked to it, so none of this code could be reached. Removed the PPP `GET` parameter readers, the `$pageppp` array and its check in the page layout condition, the ten PPP routing branches in `index.php`, the three PPP active-menu branches in `menu.php`, the three unused `$_ppp_*` language strings in each of the four language files, and the orphaned `process/removepactive.php`. No change to hotspot behavior
+
 ---
 
 ## [1.3.4] - 2026-05-29

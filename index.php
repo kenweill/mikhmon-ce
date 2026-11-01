@@ -101,13 +101,6 @@ if (!isset($_SESSION["mikhmon"])) {
   $removesch = $_GET['remove-scheduler'];
   $macbinding = $_GET['mac'];
   $ipbinding = $_GET['addr'];
-  $ppp = $_GET['ppp'];
-  $secretbyname = $_GET['secret'];
-  $enablesecr = $_GET['enable-pppsecret'];
-  $disablesecr = $_GET['disable-pppsecret'];
-  $removesecr = $_GET['remove-pppsecret'];
-  $removepprofile = $_GET['remove-pprofile'];
-  $removepactive = $_GET['remove-pactive'];
   $srv = $_GET['srv'];
   $prof = $_GET['profile'];
   $comm = $_GET['comment'];
@@ -118,7 +111,6 @@ if (!isset($_SESSION["mikhmon"])) {
 
 
   $pagehotspot = array('users','hosts','ipbinding','cookies','log','dhcp-leases');
-  $pageppp = array('secrets','profiles','active',);
   $pagereport = array('userlog','selling');
 
   include_once('./include/headhtml.php');
@@ -430,62 +422,6 @@ elseif ($report == "export") {
     include_once('./process/removereport.php');
   }
 
-// ppp secret
-  elseif ($ppp == "secrets") {
-    include_once('./ppp/pppsecrets.php');
-  }
-
-// ppp addsecret
-  elseif ($ppp == "addsecret") {
-    include_once('./ppp/addsecret.php');
-  }
-
-// ppp secretbyname
-  elseif ($secretbyname != "") {
-    include_once('./ppp/secretbyname.php');
-  }
-
-// remove enable disable secret
-  elseif ($removesecr != "" || $enablesecr != "" || $disablesecr != "") {
-    echo "<b class='cl-w'><i class='fa fa-circle-o-notch fa-spin' style='font-size:24px'></i> Processing...</b>";
-
-    include_once('./process/psecret.php');
-  }
-
-
-// ppp profile
-  elseif ($ppp == "profiles") {
-    include_once('./ppp/pppprofile.php');
-  }
-
-// add ppp profile
-  elseif ($ppp == "add-profile") {
-    include_once('./ppp/addpppprofile.php');
-  }
-
-// add ppp profile
-elseif ($ppp == "edit-profile") {
-  include_once('./ppp/profilebyname.php');
-}
-// remove enable disable profile
-  elseif ($removepprofile != "") {
-    echo "<b class='cl-w'><i class='fa fa-circle-o-notch fa-spin' style='font-size:24px'></i> Processing...</b>";
-
-    include_once('./process/removepprofile.php');
-  }
-
-// ppp active connection
-  elseif ($ppp == "active") {
-    include_once('./ppp/pppactive.php');
-  }
-
-// remove ppp active connection
-  elseif ($removepactive != "") {
-    echo "<b class='cl-w'><i class='fa fa-circle-o-notch fa-spin' style='font-size:24px'></i> Processing...</b>";
-
-    include_once('./process/removepactive.php');
-  }
-
 // sys scheduler
   elseif ($sys == "scheduler") {
     include_once('./system/scheduler.php');
@@ -582,7 +518,7 @@ $(document).ready(function(){
 });
 </script>";
 
-} elseif (in_array($hotspot, $pagehotspot) || in_array($ppp, $pageppp) || in_array($report, $pagereport) || $sys == "scheduler") {
+} elseif (in_array($hotspot, $pagehotspot) || in_array($report, $pagereport) || $sys == "scheduler") {
 echo '
 <script>
 $(document).ready(function(){

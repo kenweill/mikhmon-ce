@@ -98,21 +98,6 @@ if (!isset($_SESSION["mikhmon"])) {
     $sulog = "active";
     $mpage = $_user_log;
     $lmenu = "menu-open";
-  } elseif ($ppp == "secrets" || $ppp == "addsecret" || $enablesecr != "" || $disablesecr != "" || $removesecr != "" || $secretbyname != "") {
-    $mppp = "active";
-    $ssecrets = "active";
-    $mpage = $_ppp_secrets;
-    $pppmenu = "menu-open";
-  } elseif ($ppp == "profiles" || $removepprofile != "" || $ppp == "add-profile" || $ppp == "edit-profile"  ) {
-    $mppp = "active";
-    $spprofile = "active";
-    $mpage = $_ppp_profiles;
-    $pppmenu = "menu-open";
-  } elseif ($ppp == "active" || $removepactive != "") {
-    $mppp = "active";
-    $spactive = "active";
-    $mpage = $_ppp_active;
-    $pppmenu = "menu-open";
   } elseif ($sys == "scheduler" || $enablesch != "" || $disablesch != "" || $removesch != "") {
     $sysmenu = "active";
     $ssch = "active";
